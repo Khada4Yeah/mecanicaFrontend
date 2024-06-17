@@ -1,0 +1,40 @@
+<h1>Lista de Vehículos</h1>
+<hr>
+
+<nz-spin [nzSpinning]="!paginaCargada" [nzTip]="'Cargando vehículos...'">
+</nz-spin>
+
+<div nz-row *ngIf="paginaCargada">
+    <nz-table nz-col #tablaVehiculos [nzData]="vehiculos" [nzBordered]="true"
+        [nzScroll]="isSmallScreen ? { x: '1000px' } : {}">
+        <thead>
+            <tr>
+                <th>Cédula</th>
+                <th>Cliente</th>
+                <th>Placa</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Chasis</th>
+                <th>Motor</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor=" let vehiculo of tablaVehiculos.data">
+                <td>{{ vehiculo.cliente.usuario.cedula }}</td>
+                <td>{{ vehiculo.cliente.usuario.nombres + ' ' + vehiculo.cliente.usuario.apellido_p }}</td>
+                <td>{{ vehiculo.placa }}</td>
+                <td>{{ vehiculo.marca }}</td>
+                <td>{{ vehiculo.modelo }}</td>
+                <td>{{ vehiculo.chasis }}</td>
+                <td>{{ vehiculo.motor }}</td>
+                <td>
+                    <button nz-button nzType="primary" nzSize="small" routerLink="">Editar</button>
+                    <button nz-button nzType="primary" nzDanger nzSize="small"
+                        (click)="deleteVehiculo(vehiculo.id_vehiculo)">Eliminar</button>
+                </td>
+            </tr>
+        </tbody>
+    </nz-table>
+
+</div>

@@ -1,0 +1,113 @@
+<h1>Crear Vehículo</h1>
+<hr>
+
+<nz-spin [nzSpinning]="!paginaCargada" [nzTip]="'Cargando formulario...'">
+</nz-spin>
+
+<form nz-form nzLayout="vertical" [formGroup]="formularioVehiculo" (ngSubmit)="saveVehiculo()" *ngIf="paginaCargada">
+    <nz-form-item>
+        <nz-form-label nzRequired>
+            Cliente
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="clienteErrorTpl">
+            <nz-select formControlName="id_cliente" nzPlaceHolder="Selecciona un cliente">
+                <nz-option *ngFor="let cliente of clientes"
+                    [nzLabel]="cliente.usuario.nombres + ' ' + cliente.usuario.apellido_p"
+                    [nzValue]="cliente.id_cliente">
+                </nz-option>
+            </nz-select>
+            <ng-template #clienteErrorTpl let-control>
+                @if (control.errors?.['required']){
+                Selecciona un cliente
+                }
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label nzRequired>
+            Placa
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="placaErrorTpl">
+            <input nz-input formControlName="placa" placeholder="Placa">
+            <ng-template #placaErrorTpl let-control>
+                @if (control.errors?.['required']){
+                Ingresa la placa del vehículo
+                }
+                @if (control.errors?.['pattern']){
+                Ingresa una placa válida!
+                }
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label nzRequired>
+            Marca
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="marcaErrorTpl">
+            <input nz-input formControlName="marca" placeholder="Marca">
+            <ng-template #marcaErrorTpl let-control>
+                @if (control.errors?.['required']){
+                Ingresa la marca del vehículo
+                }
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label nzRequired>
+            Modelo
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="modeloErrorTpl">
+            <input nz-input formControlName="modelo" placeholder="Modelo">
+            <ng-template #modeloErrorTpl let-control>
+                @if (control.errors?.['required']){
+                Ingresa el modelo del vehículo
+                }
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label nzRequired>
+            Chasis
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="chasisErrorTpl">
+            <input nz-input formControlName="chasis" placeholder="Chasis">
+            <ng-template #chasisErrorTpl let-control>
+                @if (control.errors?.['required']){
+                Ingresa el chasis del vehículo
+                }
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label nzRequired>
+            Motor
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="motorErrorTpl">
+            <input nz-input formControlName="motor" placeholder="Motor">
+            <ng-template #motorErrorTpl let-control>
+                @if (control.errors?.['required']){
+                Ingresa el motor del vehículo
+                }
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-control>
+            <button nz-button nzType="primary" [disabled]="!formularioVehiculo.valid">
+                Crear Vehículo
+            </button>
+
+            <button nz-button>
+                <a routerLink="../">Cancelar</a>
+            </button>
+        </nz-form-control>
+    </nz-form-item>
+
+
+</form>
