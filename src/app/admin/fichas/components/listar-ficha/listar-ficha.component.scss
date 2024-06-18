@@ -12,6 +12,10 @@ nz-table {
 }
 
 @media (min-width: 576px) {
+    nz-input-group {
+        width: 25%;
+    }
+
     nz-table {
         button {
             margin-right: 5px;
@@ -20,6 +24,10 @@ nz-table {
 }
 
 @media (max-width: 576px) {
+    nz-input-group {
+        width: 100%;
+    }
+
     nz-table {
         button {
             margin-bottom: 5px;

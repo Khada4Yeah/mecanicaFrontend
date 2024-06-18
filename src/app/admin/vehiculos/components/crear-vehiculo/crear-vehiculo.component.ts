@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Location } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -17,7 +16,7 @@ export class CrearVehiculoComponent implements OnInit {
   formularioVehiculo!: FormGroup;
   clientes: Cliente[] = [];
 
-  constructor(private formBuilder: FormBuilder, private vehiculoService: VehiculoService, private router: Router, private clienteService: ClienteService, private location: Location) {
+  constructor(private formBuilder: FormBuilder, private vehiculoService: VehiculoService, private router: Router, private clienteService: ClienteService) {
     this.buildForm();
   }
 
@@ -68,8 +67,5 @@ export class CrearVehiculoComponent implements OnInit {
     }
   }
 
-  goBack() {
-    this.location.back();
-  }
 
 }

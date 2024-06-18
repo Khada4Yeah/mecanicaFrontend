@@ -1,0 +1,23 @@
+@media (min-width: 768px) {
+    form {
+        display: flex;
+        flex-direction: column;
+        width: 35%;
+    }
+}
+
+@media (max-width: 767px) {
+    form {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+}
+
+button {
+    margin-left: 5px;
+}
+
+nz-form-label {
+    font-weight: bold;
+}

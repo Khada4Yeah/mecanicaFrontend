@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment.development';
-import { Cliente } from '../models/cliente.model';
+import { Cliente, createClienteDTO } from '../models/cliente.model';
 
 
 @Injectable({
@@ -20,6 +20,11 @@ export class ClienteService {
     return this.http.get<Cliente[]>(this.apiUrl);
   }
 
+  createCliente(cliente: createClienteDTO): Observable<any> {
+    const json = JSON.stringify(cliente);
+    const params = new HttpParams().set('content-type', 'application/json');
+    console.log(json);
 
-
+    return this.http.post<Cliente>(this.apiUrl, json, { params });
+  }
 }

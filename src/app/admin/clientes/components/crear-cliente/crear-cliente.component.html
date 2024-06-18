@@ -1,1 +1,114 @@
-<p>crear-cliente works!</p>
+<h1>Crear Cliente</h1>
+<hr>
+
+<nz-spin [nzSpinning]="!paginaCargada" [nzTip]="'Cargando formulario...'">
+</nz-spin>
+
+<form nz-form nzLayout="vertical" [formGroup]="formularioCliente" (ngSubmit)="saveCliente()" *ngIf="paginaCargada">
+    <nz-form-item>
+        <nz-form-label nzRequired>
+            Cédula
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="cedulaErrorTpl">
+            <input nz-input formControlName="cedula" placeholder="Cédula">
+            <ng-template #cedulaErrorTpl let-control>
+                @if (control.errors?.['required']){
+                Ingresa la cédula del cliente
+                }
+                @if (control.errors?.['pattern']){
+                Ingresa una cédula válida!
+                }
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label nzRequired>
+            Nombres
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="nombresErrorTpl">
+            <input nz-input formControlName="nombres" placeholder="Nombres">
+            <ng-template #nombresErrorTpl let-control>
+                @if (control.errors?.['required']){
+                Ingresa los nombres del cliente
+                }
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label nzRequired>
+            Apellido Paterno
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="apellido1ErrorTpl">
+            <input nz-input formControlName="apellido_p" placeholder="Apellido Paterno">
+            <ng-template #apellido1ErrorTpl let-control>
+                @if (control.errors?.['required']){
+                Ingresa el apellido paterno del cliente
+                }
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label nzRequired>
+            Apellido Materno
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="apellido2ErrorTpl">
+            <input nz-input formControlName="apellido_m" placeholder="Apellido Materno">
+            <ng-template #apellido2ErrorTpl let-control>
+                @if (control.errors?.['required']){
+                Ingresa el apellido materno del cliente
+                }
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label nzRequired>
+            Correo Electrónico
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="correoErrorTpl">
+            <input nz-input formControlName="correo_electronico" placeholder="Correo Electrónico">
+            <ng-template #correoErrorTpl let-control>
+                @if (control.errors?.['required']){
+                Ingresa el correo electrónico del cliente
+                }
+                @if (control.errors?.['email']){
+                Ingresa un correo electrónico válido!
+                }
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label nzRequired>
+            Celular
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="celularErrorTpl">
+            <input nz-input formControlName="celular" placeholder="Celular">
+            <ng-template #celularErrorTpl let-control>
+                @if (control.errors?.['required']){
+                Ingresa el número de celular del cliente
+                }
+                @if (control.errors?.['pattern']){
+                Ingresa un número de celular válido!
+                }
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-control>
+            <button nz-button nzType="primary" [disabled]="!formularioCliente.valid">
+                Crear Cliente
+            </button>
+
+            <button nz-button>
+                <a routerLink="../">Cancelar</a>
+            </button>
+        </nz-form-control>
+    </nz-form-item>
+
+
+</form>

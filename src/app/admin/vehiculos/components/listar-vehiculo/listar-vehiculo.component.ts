@@ -39,7 +39,7 @@ export class ListarVehiculoComponent implements OnInit {
   }
 
   @HostListener('window:resize', ['$event'])
-  onresize(event: any) {
+  onresize() {
     this.checkScreenSize();
   }
 

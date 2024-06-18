@@ -8,7 +8,8 @@ const routes: Routes = [
         path: 'admin', component: NavComponent,
         children: [
             { path: 'vehiculos', loadChildren: () => import('./vehiculos/vehiculos.module').then(m => m.VehiculosModule) },
-            { path: 'clientes', loadChildren: () => import('./clientes/clientes.module').then(m => m.ClientesModule) }
+            { path: 'clientes', loadChildren: () => import('./clientes/clientes.module').then(m => m.ClientesModule) },
+            { path: 'fichas', loadChildren: () => import('./fichas/fichas.module').then(m => m.FichasModule) }
         ]
     }
 ];
