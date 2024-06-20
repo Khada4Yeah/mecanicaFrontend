@@ -40,6 +40,22 @@ export class ListarFichaComponent implements OnInit {
     });
   }
 
+  pdfFicha(id_ficha: number): void {
+    this.fichaService.pdfFicha(id_ficha).subscribe({
+      next: (pdf) => {
+        console.log(pdf);
+        const file = new Blob([pdf], { type: 'application/pdf' });
+        const fileURL = URL.createObjectURL(file);
+        window.open(fileURL);
+      },
+      error: (err) => {
+        console.error(err);
+      },
+      complete: () => {
+      }
+    });
+  }
+
 
 
   @HostListener('window:resize', ['$event'])

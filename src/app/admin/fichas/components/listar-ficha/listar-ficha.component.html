@@ -35,7 +35,9 @@
                 <td>{{ ficha.cliente.usuario.nombres + ' ' + ficha.cliente.usuario.apellido_p }}</td>
                 <td>{{ ficha.vehiculo.placa }}</td>
                 <td>
-                    <button nz-button nzType="primary" nzSize="small" routerLink="">Ver Ficha</button>
+                    <button nz-button nzType="primary" nzSize="small" (click)="pdfFicha(ficha.id_ficha)">
+                        Ver Ficha
+                    </button>
                 </td>
             </tr>
         </tbody>

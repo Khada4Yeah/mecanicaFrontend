@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Ficha, createFichaDTO } from '../models/ficha.model';
 
@@ -21,11 +21,14 @@ export class FichaService {
     return this.http.get<Ficha[]>(`${this.apiUrl}/cliente/${param}`);
   }
 
-  // createFicha(ficha: createFichaDTO): Observable<any> {
-  //   const json = JSON.stringify(ficha);
-  //   const params = `json=${json}`;
-  //   const headers = new HttpHeaders().set('Content-Type', 'application/json');
-  //   return this.http.post<Category>(`${this.apiUrl}`, params, { headers });
-  // }
+  pdfFicha(id_ficha: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/pdf/${id_ficha}`, { responseType: 'blob' });
+  }
+
+  createFicha(ficha: createFichaDTO): Observable<any> {
+    const json = JSON.stringify(ficha);
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.post<Ficha>(`${this.apiUrl}`, json, { headers });
+  }
 
 }
