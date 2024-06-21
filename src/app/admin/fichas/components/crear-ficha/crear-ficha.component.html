@@ -1,156 +1,93 @@
 <h1>Crear Ficha</h1>
-<hr>
+<hr />
 
 <nz-spin [nzSpinning]="!paginaCargada" [nzTip]="'Cargando formulario...'">
 </nz-spin>
 
 <form nz-form nzLayout="vertical" [formGroup]="formularioFicha" *ngIf="paginaCargada">
-    <nz-form-item>
-        <nz-form-label nzRequired>
-            Cliente
-        </nz-form-label>
-        <nz-form-control [nzErrorTip]="clienteErrorTpl">
-            <nz-select nzShowSearch nzAllowClear formControlName="id_cliente" nzPlaceHolder="Selecciona un cliente">
-                <nz-option *ngFor="let cliente of clientes"
-                    [nzLabel]="cliente.usuario.nombres + ' ' + cliente.usuario.apellido_p"
-                    [nzValue]="cliente.id_cliente">
-                </nz-option>
-            </nz-select>
-            <ng-template #clienteErrorTpl let-control>
-                @if (control.errors?.['required']){
-                Selecciona un cliente
-                }
-            </ng-template>
-        </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item>
-        <nz-form-label nzRequired>
-            Vehículo
-        </nz-form-label>
-        <nz-form-control [nzErrorTip]="vehiculoErrorTpl">
-            <nz-select nzShowSearch nzAllowClear formControlName="id_vehiculo" nzPlaceHolder="Selecciona un vehículo">
-                <nz-option *ngFor="let vehiculo of vehiculos" [nzLabel]="vehiculo.placa"
-                    [nzValue]="vehiculo.id_vehiculo">
-                </nz-option>
-            </nz-select>
-            <ng-template #vehiculoErrorTpl let-control>
-                @if (control.errors?.['required']){
-                Selecciona un vehículo
-                }
-            </ng-template>
-        </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item>
-        <nz-form-label nzRequired>
-            Reparaciones
-        </nz-form-label>
-        <nz-form-control>
-            <nz-transfer [nzDataSource]="listaReparacionesTransfer" nzShowSearch [nzFilterOption]="filterOption"
-                [nzListStyle]="{ 'width.px': 270, 'height.px': 300 }" (nzChange)="cambioTransfer($event)"
-                [nzDisabled]="desactivarTransfer"></nz-transfer>
-        </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-        <button nz-button nzType="primary" (click)="generaCamposTransfer()" [disabled]="desactivarGenerarCampos">Guadar
-            Reparaciones</button>
-    </nz-form-item>
-
-    <!-- @for (item of nombreControl; track $index) {
-    <nz-form-item>
-        <nz-form-label nzRequired>
-            {{ this.labelControl[$index] + '' + $index}}
-        </nz-form-label>
-        <nz-form-control [nzErrorTip]="nombreControlErrorTpl">
-            <input nz-input formControlName="{{ item }}" />
-            <ng-template #nombreControlErrorTpl let-control>
-                @if (control.errors?.['required']){
-                Ingresa el valor en {{ this.labelControl[$index] }}
-                }
-                @else if (control.errors?.['pattern']) {
-                Ingresa un valor válido en {{ this.labelControl[$index] }}
-                }
-            </ng-template>
-        </nz-form-control>
-    </nz-form-item>
-    } -->
-
-    <!-- <div *ngIf="mostarCampos">
-        @for(label of labelControl; track $index) {
+    <div formGroupName="ficha">
         <nz-form-item>
-            <nz-form-label>
-                {{ label }}
-            </nz-form-label>
-            <nz-form-control nzErrorTip="Verifica los valores introducidos...">
-                @if (label === 'CAMBIO DE RULIMANES DE RUEDA') {
-                <input nz-input formControlName="{{ nombreControl[$index] }}" />
-                }
-                @else {
-                <nz-input-group>
-
-                    <input nz-input formControlName="{{ nombreControl[$index * 2] }}" placeholder="Kilometraje Act.">
-
-                    <input nz-input formControlName="{{ nombreControl[$index * 2 + 1] }}"
-                        placeholder="Kilometraje Sig.">
-
-
-                </nz-input-group>
-                }
-            </nz-form-control>
-        </nz-form-item>
-        }
-    </div> -->
-
-    <div *ngIf="mostarCampos">
-        @for(label of labelControl; track $index) {
-        <nz-form-item>
-            <nz-form-label>
-                {{ label }}
-            </nz-form-label>
-            <nz-form-control>
-                @if (label === 'CAMBIO DE RULIMANES DE RUEDA') {
-
-                <nz-select nzMode="tags" nzPlaceHolder="Selecciones las ruedas"
-                    formControlName="{{ nombreControl[$index] }}">
-                    <nz-option nzValue="DI" nzLabel="DL"></nz-option>
-                    <nz-option nzValue="DD" nzLabel="DD"></nz-option>
-                    <nz-option nzValue="TI" nzLabel="TI"></nz-option>
-                    <nz-option nzValue="TD" nzLabel="TD"></nz-option>
+            <nz-form-label nzRequired>Cliente</nz-form-label>
+            <nz-form-control [nzErrorTip]="clienteErrorTpl">
+                <nz-select nzShowSearch nzAllowClear formControlName="id_cliente" nzPlaceHolder="Selecciona un cliente">
+                    <nz-option *ngFor="let cliente of clientes"
+                        [nzLabel]="cliente.usuario.nombres + ' ' + cliente.usuario.apellido_p"
+                        [nzValue]="cliente.id_cliente">
+                    </nz-option>
                 </nz-select>
-                }
-
-                @else {
-                <nz-input-group>
-
-                    <input nz-input formControlName="{{ nombreControl[$index * 2] }}" placeholder="Kilometraje Act.">
-
-                    <input nz-input formControlName="{{ nombreControl[$index * 2 + 1] }}"
-                        placeholder="Kilometraje Sig.">
-
-
-                </nz-input-group>
-
-                <div
-                    *ngIf="formularioFicha.controls[nombreControl[$index * 2]].dirty && formularioFicha.controls[nombreControl[$index * 2]].errors">
-                    <p *ngIf="formularioFicha.controls[nombreControl[$index * 2]].errors?.['required']">El campo no
-                        puede estar vacio</p>
-                    <p *ngIf="formularioFicha.controls[nombreControl[$index * 2]].errors?.['pattern']">El campo debe ser
-                        un numero</p>
-                </div>
-                <div
-                    *ngIf="formularioFicha.controls[nombreControl[$index * 2 + 1]].dirty && formularioFicha.controls[nombreControl[$index * 2 + 1]].errors">
-                    <p *ngIf="formularioFicha.controls[nombreControl[$index * 2 + 1]].errors?.['required']">El campo no
-                        puede estar vacio</p>
-                    <p *ngIf="formularioFicha.controls[nombreControl[$index * 2 + 1]].errors?.['pattern']">El campo debe
-                        ser un numero</p>
-                </div>
-
-                }
+                <ng-template #clienteErrorTpl let-control>
+                    <ng-container *ngIf="control.errors?.['required']">Selecciona un cliente</ng-container>
+                </ng-template>
             </nz-form-control>
         </nz-form-item>
-        }
+
+        <nz-form-item>
+            <nz-form-label nzRequired>Vehículo</nz-form-label>
+            <nz-form-control [nzErrorTip]="vehiculoErrorTpl">
+                <nz-select nzShowSearch nzAllowClear formControlName="id_vehiculo"
+                    nzPlaceHolder="Selecciona un vehículo">
+                    <nz-option *ngFor="let vehiculo of vehiculos" [nzLabel]="vehiculo.placa"
+                        [nzValue]="vehiculo.id_vehiculo">
+                    </nz-option>
+                </nz-select>
+                <ng-template #vehiculoErrorTpl let-control>
+                    <ng-container *ngIf="control.errors?.['required']">Selecciona un vehículo</ng-container>
+                </ng-template>
+            </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+            <nz-form-label>Otros</nz-form-label>
+            <nz-form-control>
+                <textarea nz-input rows="4" formControlName="otros"></textarea>
+            </nz-form-control>
+        </nz-form-item>
     </div>
 
+    <nz-transfer [nzDataSource]="listaReparacionesTransfer" nzShowSearch
+        [nzListStyle]="{ 'width.px': 270, 'height.px': 300 }" (nzChange)="handleTransferChange($event)">
+    </nz-transfer>
 
+    <div formArrayName="reparaciones">
+        <div *ngFor="let reparacion of reparaciones.controls; let i = index" [formGroupName]="i">
+            <nz-form-item>
+                <nz-form-label>Tipo de Reparación:</nz-form-label>
+                <nz-form-control>
+                    <input nz-input formControlName="tipo_reparacion" readonly />
+                </nz-form-control>
+            </nz-form-item>
+
+            <div *ngIf="reparacion.get('informacion_adicional')">
+                <div [formGroupName]="'informacion_adicional'">
+                    <nz-form-item *ngIf="reparacion.get('informacion_adicional')?.get('kilometraje_actual')">
+                        <nz-form-label>Kilometraje Actual:</nz-form-label>
+                        <nz-form-control>
+                            <input nz-input formControlName="kilometraje_actual" />
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item *ngIf="reparacion.get('informacion_adicional')?.get('kilometraje_siguiente')">
+                        <nz-form-label>Kilometraje Siguiente:</nz-form-label>
+                        <nz-form-control>
+                            <input nz-input formControlName="kilometraje_siguiente" />
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item *ngIf="reparacion.get('informacion_adicional')?.get('ruedas')">
+                        <nz-form-label>Ruedas:</nz-form-label>
+                        <nz-form-control>
+                            <nz-select formControlName="ruedas" nzMode="tags"
+                                [nzOptions]="[{label: 'DD', value: 'DD'}, {label: 'DI', value: 'DI'}, {label: 'TD', value: 'TD'}, {label: 'TI', value: 'TI'}]">
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <nz-form-item>
+        <button nz-button nzType="primary" (click)="onSubmit()">save</button>
+    </nz-form-item>
 </form>

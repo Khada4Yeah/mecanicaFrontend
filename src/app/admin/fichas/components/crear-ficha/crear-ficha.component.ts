@@ -2,151 +2,162 @@ import { Component, OnInit } from '@angular/core';
 import { Cliente } from '../../../../core/models/cliente.model';
 import { Vehiculo } from '../../../../core/models/vehiculo.model';
 import { Reparacion } from '../../../../core/models/reparacion.model';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { VehiculoService } from '../../../../core/services/vehiculo.service';
 import { Router } from '@angular/router';
 import { ClienteService } from '../../../../core/services/cliente.service';
 import { ReparacionService } from '../../../../core/services/reparacion.service';
 import { TransferItem } from 'ng-zorro-antd/transfer';
+import { createFichaDTO } from '../../../../core/models/ficha.model';
+import { FichaReparacion } from '../../../../core/models/ficha_reparacion.model';
+interface ControlAdicional {
+  label: string;
+  controles: string[];
+  id_reparacion?: number;
+}
 
 @Component({
   selector: 'app-crear-ficha',
   templateUrl: './crear-ficha.component.html',
-  styleUrl: './crear-ficha.component.scss'
+  styleUrls: ['./crear-ficha.component.scss']
 })
 export class CrearFichaComponent implements OnInit {
+
   paginaCargada: boolean = false;
   formularioFicha!: FormGroup;
+
   clientes: Cliente[] = [];
   vehiculos: Vehiculo[] = [];
-  reparaciones: Reparacion[] = [];
+  listaReparaciones: Reparacion[] = [];
   listaReparacionesTransfer: TransferItem[] = [];
-  desactivarTransfer: boolean = false;
-  desactivarGenerarCampos: boolean = true;
-  mostarCampos: boolean = false;
-  nombreControl: string[] = []; //nombre del input de los controles adicionales que se generan en el formulario
-  labelControl: string[] = []; //label de los controles adicionales que se generan en el formulario
-  idsParaChecar: number[] = [4, 9, 13, 14, 15];
+  muestraAdicional: boolean = false;
 
-  constructor(private formBuilder: FormBuilder, private vehiculoService: VehiculoService,
-    private router: Router, private clienteService: ClienteService, private reparacionService: ReparacionService) {
+
+  constructor(private fb: FormBuilder, private vehiculoService: VehiculoService, private clienteService: ClienteService, private reparacionService: ReparacionService) {
     this.buildForm();
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.getClientes();
-    this.getVehiculos();
-    this.getReparaciones();
+    this.formularioFicha.get('ficha.id_cliente')?.valueChanges.subscribe((id_cliente: number) => {
+      console.log('etrando');
 
+      this.paginaCargada = false;
+      this.getVehiculoCliente(id_cliente);
+    });
+    this.getReparaciones();
   }
 
   private buildForm(): void {
-    this.formularioFicha = this.formBuilder.group({
-      id_vehiculo: [null, [Validators.required]],
-      id_cliente: [null, [Validators.required]],
-      id_reparacion: [null, [Validators.required]],
-      fecha: [Date.now(), [Validators.required]],
+    this.formularioFicha = this.fb.group({
+      ficha: this.fb.group({
+        id_cliente: [null, Validators.required],
+        id_vehiculo: [null, Validators.required],
+        otros: [null, Validators.required]
+      }),
+      reparaciones: this.fb.array([])
     });
   }
 
+  // Obtiene los clientes
   getClientes(): void {
     this.clienteService.getClientes().subscribe({
       next: (clientes: Cliente[]) => {
         this.clientes = clientes;
+
       },
       error: (err) => {
         console.error(err);
       },
-      complete: () => {
-      }
+      complete: () => { }
     });
   }
 
-  getVehiculos(): void {
-    this.vehiculoService.getVehiculos().subscribe({
+  // Obtiene los vehiculos de un cliente
+  getVehiculoCliente(id_cliente: number): void {
+    this.vehiculoService.getVehiculoCliente(id_cliente).subscribe({
       next: (vehiculos: Vehiculo[]) => {
         this.vehiculos = vehiculos;
+
+        this.paginaCargada = true;
       },
       error: (err) => {
         console.error(err);
       },
-      complete: () => {
-      }
+      complete: () => { }
     });
   }
 
+  // Obtiene todas las reparaciones
   getReparaciones(): void {
     this.reparacionService.getReparaciones().subscribe({
       next: (reparaciones: Reparacion[]) => {
-        this.reparaciones = reparaciones;
+        this.listaReparaciones = reparaciones;
         this.setReparaciones();
+
       },
       error: (err) => {
         console.error(err);
       },
-      complete: () => {
-
-
-      }
+      complete: () => { }
     });
   }
 
+  // Setea las reparaciones en el transfer
   setReparaciones(): void {
-    this.reparaciones.forEach((reparacion: Reparacion) => {
-      console.log(reparacion);
-
+    this.listaReparaciones.forEach((reparacion: Reparacion) => {
       this.listaReparacionesTransfer.push({
-        key: reparacion.id_reparacion.toString(),
+        key: reparacion.id_reparacion,
         title: reparacion.tipo_reparacion,
-        description: reparacion.tipo_reparacion,
         direction: 'left'
       });
-    }
-    );
+    });
     this.paginaCargada = true;
   }
 
-  filterOption(inputValue: string, item: any): boolean {
-    return item.description.indexOf(inputValue) > -1;
+  // Obtiene el control de reparaciones del formulario
+  get reparaciones(): FormArray {
+    return <FormArray>this.formularioFicha.get('reparaciones');
   }
 
-  cambioTransfer(ret: {}): void {
-    this.listaReparacionesTransfer.some((item: TransferItem) => {
+  // Agrega una reparacion al formulario
+  addReparacion(id_reparacion: number): void {
+    const group = this.fb.group({
+      tipo_reparacion: [id_reparacion, Validators.required],
+      informacion_adicional: this.createInformacionAdicional(id_reparacion)
+    });
+    this.reparaciones.push(group);
+  }
+
+  // Crea el control de la informacion adicional segun el tipo de reparacion
+  createInformacionAdicional(key: number) {
+    if ([4, 9, 13, 14, 15].includes(key)) {
+      this.muestraAdicional = true;
+      return this.fb.group({
+        kilometraje_actual: [null, Validators.required],
+        kilometraje_siguiente: [null, Validators.required]
+      });
+    } else if (key === 23) {
+      return this.fb.group({
+        ruedas: [[], Validators.required],
+      });
+    } else {
+      return this.fb.control(null);
+    }
+
+  }
+
+  handleTransferChange(ret: {}) {
+    this.reparaciones.clear();
+    this.listaReparacionesTransfer.forEach((item: TransferItem) => {
       if (item.direction === 'right') {
-        this.desactivarGenerarCampos = false;
-        return true;
+        this.addReparacion(Number(item['key']));
       }
-      return false;
     });
   }
 
-  generaCamposTransfer(): void {
-    console.log(this.listaReparacionesTransfer);
-    this.listaReparacionesTransfer.forEach((reparacion: TransferItem) => {
-      console.log('rep', reparacion);
-
-      if (reparacion.direction === 'right') {
-        if (this.idsParaChecar.includes(Number(reparacion['key']))) {
-          this.labelControl.push(reparacion['title']);
-
-          this.nombreControl.push(`kmAct_${reparacion['key']}`);
-          this.nombreControl.push(`kmSig_${reparacion['key']}`);
-
-          this.formularioFicha.addControl(`kmAct_${reparacion['key']}`, this.formBuilder.control(null, [Validators.required, Validators.pattern(/^[0-9]+$/)]));
-          this.formularioFicha.addControl(`kmSig_${reparacion['key']}`, this.formBuilder.control(null, [Validators.required, Validators.pattern(/^[0-9]+$/)]));
-        }
-        else if (Number(reparacion['key']) === 23) {
-          this.labelControl.push(reparacion['title']);
-
-          this.nombreControl.push(`ruedas_${reparacion['key']}`);
-          this.formularioFicha.addControl(`ruedas_${reparacion['key']}`, this.formBuilder.control(null, [Validators.required]));
-        }
-      }
-    });
-    console.log(this.formularioFicha.controls);
-    this.desactivarGenerarCampos = true;
-    this.desactivarTransfer = true;
-
-    this.mostarCampos = true;
+  onSubmit() {
+    console.log(this.formularioFicha.value);
   }
+
 }
