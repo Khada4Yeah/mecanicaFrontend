@@ -10,7 +10,7 @@
             Cliente
         </nz-form-label>
         <nz-form-control [nzErrorTip]="clienteErrorTpl">
-            <nz-select formControlName="id_cliente" nzPlaceHolder="Selecciona un cliente">
+            <nz-select formControlName="id_cliente" nzPlaceHolder="Selecciona un cliente" nzShowSearch>
                 <nz-option *ngFor="let cliente of clientes"
                     [nzLabel]="cliente.usuario.nombres + ' ' + cliente.usuario.apellido_p"
                     [nzValue]="cliente.id_cliente">

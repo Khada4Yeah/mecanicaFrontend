@@ -11,9 +11,14 @@ export interface Ficha {
     vehiculo: Vehiculo;
 }
 
-export interface createFichaDTO extends Omit<Ficha, 'id_ficha' | 'numero_ficha' | 'fecha'
-    | 'cliente' | 'vehiculo'> {
-    id_cliente: number;
-    id_vehiculo: number;
-    reparaciones: FichaReparacion[];
+export interface createFichaDTO {
+    ficha: {
+        id_cliente: number;
+        id_vehiculo: number;
+        otros: string;
+    };
+    reparaciones: {
+        id_reparacion: number;
+        informacion_adicional: JSON | null;
+    }[];
 }

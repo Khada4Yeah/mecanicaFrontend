@@ -9,7 +9,7 @@
         <nz-form-item>
             <nz-form-label nzRequired>Cliente</nz-form-label>
             <nz-form-control [nzErrorTip]="clienteErrorTpl">
-                <nz-select nzShowSearch nzAllowClear formControlName="id_cliente" nzPlaceHolder="Selecciona un cliente">
+                <nz-select nzShowSearch formControlName="id_cliente" nzPlaceHolder="Selecciona un cliente">
                     <nz-option *ngFor="let cliente of clientes"
                         [nzLabel]="cliente.usuario.nombres + ' ' + cliente.usuario.apellido_p"
                         [nzValue]="cliente.id_cliente">
@@ -44,42 +44,65 @@
         </nz-form-item>
     </div>
 
-    <nz-transfer [nzDataSource]="listaReparacionesTransfer" nzShowSearch
-        [nzListStyle]="{ 'width.px': 270, 'height.px': 300 }" (nzChange)="handleTransferChange($event)">
-    </nz-transfer>
+    <nz-form-item>
+        <nz-transfer [nzDataSource]="listaReparacionesTransfer" nzShowSearch
+            [nzListStyle]="{ 'width.px': 270, 'height.px': 300 }" (nzChange)="handleTransferChange($event)">
+        </nz-transfer>
+    </nz-form-item>
 
     <div formArrayName="reparaciones">
         <div *ngFor="let reparacion of reparaciones.controls; let i = index" [formGroupName]="i">
-            <nz-form-item>
-                <nz-form-label>Tipo de Reparación:</nz-form-label>
-                <nz-form-control>
-                    <input nz-input formControlName="tipo_reparacion" readonly />
-                </nz-form-control>
-            </nz-form-item>
+            <input formControlName="id_reparacion" hidden />
+            @if ([4, 9, 13, 14, 15, 23].includes(reparacion.get('id_reparacion')?.value)) {
 
+            <nz-form-label>{{ getNombreReparacion(reparacion.get('id_reparacion')?.value) }}</nz-form-label>
+
+            }
             <div *ngIf="reparacion.get('informacion_adicional')">
                 <div [formGroupName]="'informacion_adicional'">
                     <nz-form-item *ngIf="reparacion.get('informacion_adicional')?.get('kilometraje_actual')">
                         <nz-form-label>Kilometraje Actual:</nz-form-label>
-                        <nz-form-control>
+                        <nz-form-control [nzErrorTip]="kmActErrorTpl">
                             <input nz-input formControlName="kilometraje_actual" />
                         </nz-form-control>
+                        <ng-template #kmActErrorTpl let-control>
+                            @if (control.errors?.['required']) {
+                            Ingresa el kilometraje actual
+                            }
+                            @if (control.errors?.['pattern']) {
+                            Solo se aceptan números enteros positivos
+                            }
+                        </ng-template>
                     </nz-form-item>
 
                     <nz-form-item *ngIf="reparacion.get('informacion_adicional')?.get('kilometraje_siguiente')">
                         <nz-form-label>Kilometraje Siguiente:</nz-form-label>
-                        <nz-form-control>
+                        <nz-form-control [nzErrorTip]="kmSigErrorTpl">
                             <input nz-input formControlName="kilometraje_siguiente" />
                         </nz-form-control>
+                        <ng-template #kmSigErrorTpl let-control>
+                            @if (control.errors?.['required']) {
+                            Ingresa el kilometraje actual
+                            }
+                            @if (control.errors?.['pattern']) {
+                            Solo se aceptan números enteros positivos
+                            }
+                        </ng-template>
                     </nz-form-item>
 
                     <nz-form-item *ngIf="reparacion.get('informacion_adicional')?.get('ruedas')">
                         <nz-form-label>Ruedas:</nz-form-label>
-                        <nz-form-control>
-                            <nz-select formControlName="ruedas" nzMode="tags"
+                        <nz-form-control [nzErrorTip]="ruedasErrorTpl">
+                            <nz-select formControlName="ruedas" [nzMaxTagCount]="4" nzMode="multiple"
+                                nzPlaceHolder="Seleccione las ruedas"
                                 [nzOptions]="[{label: 'DD', value: 'DD'}, {label: 'DI', value: 'DI'}, {label: 'TD', value: 'TD'}, {label: 'TI', value: 'TI'}]">
                             </nz-select>
                         </nz-form-control>
+                        <ng-template #ruedasErrorTpl let-control>
+                            @if (control.errors?.['required']) {
+                            Selecciona al menos una rueda
+                            }
+                        </ng-template>
                     </nz-form-item>
                 </div>
 
@@ -88,6 +111,6 @@
     </div>
 
     <nz-form-item>
-        <button nz-button nzType="primary" (click)="onSubmit()">save</button>
+        <button nz-button nzType="primary" (click)="onSubmit()" [disabled]="!formularioFicha.valid">Crear Ficha</button>
     </nz-form-item>
 </form>

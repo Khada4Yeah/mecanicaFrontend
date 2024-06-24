@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Cliente } from '../../../../core/models/cliente.model';
 import { Vehiculo } from '../../../../core/models/vehiculo.model';
 import { Reparacion } from '../../../../core/models/reparacion.model';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { VehiculoService } from '../../../../core/services/vehiculo.service';
 import { Router } from '@angular/router';
 import { ClienteService } from '../../../../core/services/cliente.service';
@@ -10,11 +10,8 @@ import { ReparacionService } from '../../../../core/services/reparacion.service'
 import { TransferItem } from 'ng-zorro-antd/transfer';
 import { createFichaDTO } from '../../../../core/models/ficha.model';
 import { FichaReparacion } from '../../../../core/models/ficha_reparacion.model';
-interface ControlAdicional {
-  label: string;
-  controles: string[];
-  id_reparacion?: number;
-}
+import { FichaService } from '../../../../core/services/ficha.service';
+
 
 @Component({
   selector: 'app-crear-ficha',
@@ -30,10 +27,11 @@ export class CrearFichaComponent implements OnInit {
   vehiculos: Vehiculo[] = [];
   listaReparaciones: Reparacion[] = [];
   listaReparacionesTransfer: TransferItem[] = [];
-  muestraAdicional: boolean = false;
+  saveBtnDisabled: boolean = false;
 
 
-  constructor(private fb: FormBuilder, private vehiculoService: VehiculoService, private clienteService: ClienteService, private reparacionService: ReparacionService) {
+  constructor(private formBuilder: FormBuilder, private vehiculoService: VehiculoService, private clienteService: ClienteService,
+    private reparacionService: ReparacionService, private fichaService: FichaService, private router: Router) {
     this.buildForm();
   }
 
@@ -49,14 +47,21 @@ export class CrearFichaComponent implements OnInit {
   }
 
   private buildForm(): void {
-    this.formularioFicha = this.fb.group({
-      ficha: this.fb.group({
+    this.formularioFicha = this.formBuilder.group({
+      ficha: this.formBuilder.group({
         id_cliente: [null, Validators.required],
         id_vehiculo: [null, Validators.required],
-        otros: [null, Validators.required]
+        otros: [null]
       }),
-      reparaciones: this.fb.array([])
+      reparaciones: this.formBuilder.array([], [this.reparacionesValidator()])
     });
+  }
+
+  // Validador personalizado para asegurar que el FormArray tenga al menos un elemento
+  reparacionesValidator(): ValidatorFn {
+    return (formArray: AbstractControl): { [key: string]: any } | null => {
+      return (formArray as FormArray).length > 0 ? null : { 'reparacionesRequired': true };
+    };
   }
 
   // Obtiene los clientes
@@ -121,28 +126,28 @@ export class CrearFichaComponent implements OnInit {
   }
 
   // Agrega una reparacion al formulario
-  addReparacion(id_reparacion: number): void {
-    const group = this.fb.group({
-      tipo_reparacion: [id_reparacion, Validators.required],
+  addReparacion(id_reparacion: number, nombre_reparacion: string): void {
+    const group = this.formBuilder.group({
+      id_reparacion: [id_reparacion, Validators.required],
       informacion_adicional: this.createInformacionAdicional(id_reparacion)
     });
     this.reparaciones.push(group);
+    console.log(this.reparaciones);
   }
 
   // Crea el control de la informacion adicional segun el tipo de reparacion
   createInformacionAdicional(key: number) {
     if ([4, 9, 13, 14, 15].includes(key)) {
-      this.muestraAdicional = true;
-      return this.fb.group({
-        kilometraje_actual: [null, Validators.required],
-        kilometraje_siguiente: [null, Validators.required]
+      return this.formBuilder.group({
+        kilometraje_actual: [null, [Validators.required, Validators.pattern('^[0-9]*$')]],
+        kilometraje_siguiente: [null, [Validators.required, Validators.pattern('^[0-9]*$')]]
       });
     } else if (key === 23) {
-      return this.fb.group({
+      return this.formBuilder.group({
         ruedas: [[], Validators.required],
       });
     } else {
-      return this.fb.control(null);
+      return this.formBuilder.control(null);
     }
 
   }
@@ -151,13 +156,30 @@ export class CrearFichaComponent implements OnInit {
     this.reparaciones.clear();
     this.listaReparacionesTransfer.forEach((item: TransferItem) => {
       if (item.direction === 'right') {
-        this.addReparacion(Number(item['key']));
+        this.addReparacion(Number(item['key']), item['title']);
       }
     });
   }
 
+  getNombreReparacion(id_reparacion: number): string {
+    return this.listaReparaciones.find((reparacion: Reparacion) => reparacion.id_reparacion === id_reparacion)?.tipo_reparacion || '';
+  }
+
   onSubmit() {
-    console.log(this.formularioFicha.value);
+    if (this.formularioFicha.valid) {
+      this.fichaService.createFicha(this.formularioFicha.value).subscribe({
+        next: (ficha: any) => {
+          console.log(ficha);
+          this.router.navigate(['/admin/fichas/lista']);
+        },
+        error: (err) => {
+          console.error(err);
+        },
+        complete: () => {
+        }
+      });
+
+    }
   }
 
 }
