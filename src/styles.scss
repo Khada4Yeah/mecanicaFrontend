@@ -9,3 +9,8 @@ nz-spin {
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+// Poner en negrita el título de los modales de ng-zorro
+.ant-modal-confirm-body .ant-modal-confirm-title {
+    font-weight: bold;
+}

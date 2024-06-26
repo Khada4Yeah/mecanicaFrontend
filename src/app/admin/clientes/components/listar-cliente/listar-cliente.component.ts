@@ -47,7 +47,6 @@ export class ListarClienteComponent implements OnInit {
     this.isSmallScreen = window.innerWidth < 768; // Cambia 768 al tamaño que desees
   }
 
-  deleteUsuario(): void {
-  }
+
 
 }

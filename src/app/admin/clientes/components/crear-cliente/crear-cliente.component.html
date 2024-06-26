@@ -100,7 +100,7 @@
 
     <nz-form-item>
         <nz-form-control>
-            <button nz-button nzType="primary" [disabled]="!formularioCliente.valid">
+            <button nz-button nzType="primary" [disabled]="!formularioCliente.valid" [nzLoading]="status === 'loading'">
                 Crear Cliente
             </button>
 
