@@ -1,4 +1,9 @@
+@if(esModoEditar){
+<h1>Editar Cliente</h1>
+}
+@else {
 <h1>Crear Cliente</h1>
+}
 <hr>
 
 <nz-spin [nzSpinning]="!paginaCargada" [nzTip]="'Cargando formulario...'">
@@ -101,11 +106,11 @@
     <nz-form-item>
         <nz-form-control>
             <button nz-button nzType="primary" [disabled]="!formularioCliente.valid" [nzLoading]="status === 'loading'">
-                Crear Cliente
+                Guardar Cliente
             </button>
 
             <button nz-button>
-                <a routerLink="../">Cancelar</a>
+                <a routerLink="../../lista">Cancelar</a>
             </button>
         </nz-form-control>
     </nz-form-item>

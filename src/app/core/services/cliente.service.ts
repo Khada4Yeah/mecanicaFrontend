@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { Observable, catchError, throwError } from 'rxjs';
 
 import { environment } from '../../../environments/environment.development';
-import { Cliente, createClienteDTO } from '../models/cliente.model';
+import { Cliente, CreateClienteDTO } from '../models/cliente.model';
 
 
 @Injectable({
@@ -20,11 +20,31 @@ export class ClienteService {
     return this.http.get<Cliente[]>(this.apiUrl);
   }
 
-  createCliente(cliente: createClienteDTO): Observable<any> {
+  getCliente(id_cliente: number): Observable<Cliente> {
+    return this.http.get<Cliente>(`${this.apiUrl}/${id_cliente}`);
+  }
+
+  createCliente(cliente: CreateClienteDTO): Observable<any> {
     const json = JSON.stringify(cliente);
     const params = new HttpParams().set('content-type', 'application/json');
     console.log(json);
 
     return this.http.post<Cliente>(this.apiUrl, json, { params });
+  }
+
+  updateCliente(cliente: CreateClienteDTO, id_usuario: number): Observable<any> {
+    const json = JSON.stringify(cliente);
+    console.log(json);
+
+
+    return this.http.patch(`${this.apiUrl}/${id_usuario}`, json).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 400) {
+
+          return throwError(() => error);
+        }
+        return throwError(() => error);
+      }
+      ));
   }
 }

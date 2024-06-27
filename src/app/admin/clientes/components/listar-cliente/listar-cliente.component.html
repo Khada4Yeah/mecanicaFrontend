@@ -25,7 +25,8 @@
                 <td>{{ cliente.usuario.correo_electronico }}</td>
                 <td>{{ cliente.usuario.celular }}</td>
                 <td>
-                    <button nz-button nzType="primary" nzSize="small" routerLink="">Editar</button>
+                    <button nz-button nzType="primary" nzSize="small"
+                        (click)="editCliente(cliente.id_cliente.toString())">Editar</button>
                 </td>
             </tr>
         </tbody>

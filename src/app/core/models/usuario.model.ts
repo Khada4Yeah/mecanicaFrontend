@@ -13,3 +13,7 @@ export interface Usuario {
 
 export interface CreateUsuarioDTO
     extends Omit<Usuario, 'id_usuario | created_at | upadted_at'> { }
+
+
+export interface UpdateUsuarioDTO extends Partial<Usuario> {
+}

@@ -1,4 +1,4 @@
-import { Usuario, CreateUsuarioDTO } from "./usuario.model";
+import { Usuario, CreateUsuarioDTO, UpdateUsuarioDTO } from "./usuario.model";
 
 export interface Cliente {
     id_cliente: number;
@@ -6,5 +6,7 @@ export interface Cliente {
     usuario: Usuario
 }
 
-export interface createClienteDTO extends CreateUsuarioDTO {
+export interface CreateClienteDTO extends CreateUsuarioDTO {
 }
+
+export interface UpdateClienteDTO extends UpdateUsuarioDTO { }

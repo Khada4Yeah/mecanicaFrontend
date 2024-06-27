@@ -7,6 +7,7 @@ import { CrearClienteComponent } from './components/crear-cliente/crear-cliente.
 const routes: Routes = [
     { path: 'lista', component: ListarClienteComponent },
     { path: 'crear', component: CrearClienteComponent },
+    { path: 'editar/:id', component: CrearClienteComponent }
 ];
 
 @NgModule({

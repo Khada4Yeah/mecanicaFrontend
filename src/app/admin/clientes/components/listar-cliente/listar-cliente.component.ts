@@ -1,6 +1,10 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
+
 import { Cliente } from '../../../../core/models/cliente.model';
+
 import { ClienteService } from '../../../../core/services/cliente.service';
+import { EncryptionService } from '../../../../core/services/encryption.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-listar-cliente',
@@ -10,6 +14,8 @@ import { ClienteService } from '../../../../core/services/cliente.service';
 export class ListarClienteComponent implements OnInit {
   paginaCargada: boolean = false;
   clientes: Cliente[] = [];
+  private encryptionService = inject(EncryptionService);
+  private router = inject(Router);
 
   isSmallScreen: boolean = false;
 
@@ -24,7 +30,6 @@ export class ListarClienteComponent implements OnInit {
   getClientes(): void {
     this.clienteService.getClientes().subscribe({
       next: (clientes: Cliente[]) => {
-        console.log(clientes);
 
         this.clientes = clientes;
         this.paginaCargada = true;
@@ -47,6 +52,9 @@ export class ListarClienteComponent implements OnInit {
     this.isSmallScreen = window.innerWidth < 768; // Cambia 768 al tamaño que desees
   }
 
-
+  editCliente(id_cliente: string): void {
+    const encryptedId = this.encryptionService.encrypt(id_cliente);
+    this.router.navigate([`/admin/clientes/editar/${encryptedId}`]);
+  }
 
 }
