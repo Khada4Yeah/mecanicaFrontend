@@ -33,14 +33,14 @@ export class ModalService {
         break;
       case 'info':
         this.modalService.info({
-          nzTitle: 'Info',
+          nzTitle: 'Información',
           nzContent: mensaje.replace(/\n/g, '<br>'),
           nzStyle: { whiteSpace: 'pre-line' }
         });
         break;
       case 'warning':
         this.modalService.warning({
-          nzTitle: 'Warning',
+          nzTitle: 'Advertencia',
           nzContent: mensaje.replace(/\n/g, '<br>'),
           nzStyle: { whiteSpace: 'pre-line' }
         });

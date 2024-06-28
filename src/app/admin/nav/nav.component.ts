@@ -23,9 +23,9 @@ export class NavComponent {
         },
         complete: () => {
           console.log('Sesión cerrada');
+          this.router.navigate(['/login']);
         }
       }
     );
-    this.router.navigate(['/login']);
   }
 }

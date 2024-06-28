@@ -39,14 +39,14 @@ export class LoginFormComponent implements OnInit {
         next: (data) => {
           this.status = 'success';
           console.log(data);
+          this.router.navigate(['/admin']);
         },
         error: (err) => {
-          console.error(err);
           this.status = 'failed';
           this.modalError(err.error.message);
         },
         complete: () => {
-          this.router.navigate(['/admin']);
+
         }
       });
     }
