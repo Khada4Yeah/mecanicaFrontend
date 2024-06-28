@@ -9,7 +9,6 @@ import { ClienteService } from '../../../../core/services/cliente.service';
 import { ReparacionService } from '../../../../core/services/reparacion.service';
 import { TransferItem } from 'ng-zorro-antd/transfer';
 import { createFichaDTO } from '../../../../core/models/ficha.model';
-import { FichaReparacion } from '../../../../core/models/ficha_reparacion.model';
 import { FichaService } from '../../../../core/services/ficha.service';
 
 
