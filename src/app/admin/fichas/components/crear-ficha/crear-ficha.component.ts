@@ -10,6 +10,7 @@ import { ReparacionService } from '../../../../core/services/reparacion.service'
 import { TransferItem } from 'ng-zorro-antd/transfer';
 import { createFichaDTO } from '../../../../core/models/ficha.model';
 import { FichaService } from '../../../../core/services/ficha.service';
+import { format } from 'date-fns';
 
 
 @Component({
@@ -50,6 +51,7 @@ export class CrearFichaComponent implements OnInit {
       ficha: this.formBuilder.group({
         id_cliente: [null, Validators.required],
         id_vehiculo: [null, Validators.required],
+        fecha: [null],
         otros: [null]
       }),
       reparaciones: this.formBuilder.array([], [this.reparacionesValidator()])
@@ -165,7 +167,12 @@ export class CrearFichaComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log(this.formularioFicha.value);
+
     if (this.formularioFicha.valid) {
+
+      console.log(this.formularioFicha.get('ficha.fecha')?.value);
+
       this.fichaService.createFicha(this.formularioFicha.value).subscribe({
         next: (ficha: any) => {
           console.log(ficha);

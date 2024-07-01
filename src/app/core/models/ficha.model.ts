@@ -1,5 +1,4 @@
 import { Cliente } from "./cliente.model";
-import { FichaReparacion } from "./ficha_reparacion.model";
 import { Vehiculo } from "./vehiculo.model";
 
 export interface Ficha {
@@ -16,6 +15,7 @@ export interface createFichaDTO {
         id_cliente: number;
         id_vehiculo: number;
         otros: string;
+        fecha?: string;
     };
     reparaciones: {
         id_reparacion: number;

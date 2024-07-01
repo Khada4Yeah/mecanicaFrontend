@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgZorroModule } from '../../ng-zorro/ng-zorro.module';
 import { ListarClienteComponent } from './components/listar-cliente/listar-cliente.component';
 import { CrearClienteComponent } from './components/crear-cliente/crear-cliente.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ClientesRoutingModule } from './clientes-routing.module';
 import { ModalService } from '../../core/services/modal.service';
 import { modalServiceFactory } from '../../core/services/modal.service.provider';
@@ -18,6 +18,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
     ClientesRoutingModule,
     NgZorroModule,
     ReactiveFormsModule,
+    FormsModule
   ],
   providers: [{
     provide: ModalService,

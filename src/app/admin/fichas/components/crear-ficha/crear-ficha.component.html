@@ -37,6 +37,17 @@
         </nz-form-item>
 
         <nz-form-item>
+            <nz-form-label nzRequired>Fecha de Ingreso</nz-form-label>
+            <nz-form-control [nzErrorTip]="fechaErrorTpl">
+                <nz-date-picker formControlName="fecha" nzPlaceHolder="Selecciona una fecha" nzFormat="yyyy-MM-dd">
+                </nz-date-picker>
+                <ng-template #fechaErrorTpl let-control>
+                    <ng-container *ngIf="control.errors?.['required']">Selecciona una fecha</ng-container>
+                </ng-template>
+            </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
             <nz-form-label>Otros</nz-form-label>
             <nz-form-control>
                 <textarea nz-input rows="4" formControlName="otros"></textarea>

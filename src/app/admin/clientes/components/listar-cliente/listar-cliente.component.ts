@@ -9,11 +9,15 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-listar-cliente',
   templateUrl: './listar-cliente.component.html',
-  styleUrl: './listar-cliente.component.scss'
+  styleUrl: './listar-cliente.component.scss',
 })
 export class ListarClienteComponent implements OnInit {
   paginaCargada: boolean = false;
   clientes: Cliente[] = [];
+  activarBuscador: boolean = false;
+  valorBusqueda: string = '';
+  clientesFiltrados: Cliente[] = [];
+
   private encryptionService = inject(EncryptionService);
   private router = inject(Router);
 
@@ -30,26 +34,16 @@ export class ListarClienteComponent implements OnInit {
   getClientes(): void {
     this.clienteService.getClientes().subscribe({
       next: (clientes: Cliente[]) => {
-
         this.clientes = clientes;
-        this.paginaCargada = true;
       },
       error: (err) => {
         console.error(err);
       },
       complete: () => {
-
-      }
-    })
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onresize(event: any) {
-    this.checkScreenSize();
-  }
-
-  checkScreenSize() {
-    this.isSmallScreen = window.innerWidth < 768; // Cambia 768 al tamaño que desees
+        this.clientesFiltrados = [...this.clientes];
+        this.paginaCargada = true;
+      },
+    });
   }
 
   editCliente(id_cliente: string): void {
@@ -57,4 +51,31 @@ export class ListarClienteComponent implements OnInit {
     this.router.navigate([`/admin/clientes/editar/${encryptedId}`]);
   }
 
+  limpiarBusqueda(): void {
+    this.valorBusqueda = '';
+    this.buscar();
+  }
+
+  buscar(): void {
+    this.activarBuscador = true;
+    const palabrasBusqueda = this.valorBusqueda.toUpperCase().split(' ');
+
+    this.clientesFiltrados = this.clientes.filter((cliente: Cliente) => {
+      const apellidoP = cliente.usuario.apellido_p.toUpperCase();
+      const apellidoM = cliente.usuario.apellido_m.toUpperCase();
+
+      return palabrasBusqueda.every(
+        (palabra) => apellidoP.includes(palabra) || apellidoM.includes(palabra)
+      );
+    });
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onresize() {
+    this.checkScreenSize();
+  }
+
+  checkScreenSize() {
+    this.isSmallScreen = window.innerWidth < 768; // Cambia 768 al tamaño que desees
+  }
 }

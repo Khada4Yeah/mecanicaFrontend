@@ -6,14 +6,15 @@ import { NgZorroModule } from '../../ng-zorro/ng-zorro.module';
 
 import { ListarVehiculoComponent } from './components/listar-vehiculo/listar-vehiculo.component';
 import { CrearVehiculoComponent } from './components/crear-vehiculo/crear-vehiculo.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
     CommonModule,
     VehiculosRoutingModule,
     NgZorroModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ],
   declarations: [ListarVehiculoComponent, CrearVehiculoComponent]
 })

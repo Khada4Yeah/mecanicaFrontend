@@ -13,6 +13,7 @@ export class ModalService {
   mostrar(type: 'error' | 'success' | 'info' | 'warning', mensaje: string, ruta?: string) {
     switch (type) {
       case 'error':
+
         this.modalService.error({
           nzTitle: 'Error',
           nzContent: mensaje.replace(/\n/g, '<br>'),

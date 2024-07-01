@@ -1,4 +1,9 @@
+@if(esModoEditar){
+<h1>Editar Vehículo</h1>
+}
+@else {
 <h1>Crear Vehículo</h1>
+}
 <hr>
 
 <nz-spin [nzSpinning]="!paginaCargada" [nzTip]="'Cargando formulario...'">

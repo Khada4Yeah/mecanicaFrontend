@@ -7,6 +7,7 @@ import { CrearVehiculoComponent } from './components/crear-vehiculo/crear-vehicu
 const routes: Routes = [
     { path: 'lista', component: ListarVehiculoComponent },
     { path: 'crear', component: CrearVehiculoComponent },
+    { path: 'editar/:id', component: CrearVehiculoComponent }
 ];
 
 @NgModule({

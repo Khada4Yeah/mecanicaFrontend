@@ -1,4 +1,5 @@
 nz-table {
+    margin-top: 20px;
     width: 100%;
 
     th {
@@ -8,17 +9,13 @@ nz-table {
 }
 
 @media (min-width: 576px) {
-    nz-table {
-        button {
-            margin-right: 5px;
-        }
+    nz-select {
+        width: 350px;
     }
 }
 
 @media (max-width: 576px) {
-    nz-table {
-        button {
-            margin-bottom: 5px;
-        }
+    nz-select {
+        width: 100%;
     }
 }

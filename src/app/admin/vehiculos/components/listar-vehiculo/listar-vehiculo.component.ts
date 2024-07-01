@@ -1,6 +1,10 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { Vehiculo } from '../../../../core/models/vehiculo.model';
 import { VehiculoService } from '../../../../core/services/vehiculo.service';
+import { Cliente } from '../../../../core/models/cliente.model';
+import { ClienteService } from '../../../../core/services/cliente.service';
+import { EncryptionService } from '../../../../core/services/encryption.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-listar-vehiculo',
@@ -10,19 +14,39 @@ import { VehiculoService } from '../../../../core/services/vehiculo.service';
 export class ListarVehiculoComponent implements OnInit {
   paginaCargada: boolean = false;
   vehiculos: Vehiculo[] = [];
+  clientes: Cliente[] = [];
+  idCliente: number = 0;
 
   isSmallScreen: boolean = false;
 
-  constructor(private vehiculoService: VehiculoService) {
+  private encryptionService = inject(EncryptionService);
+  private router = inject(Router);
+
+  constructor(private vehiculoService: VehiculoService, private clienteService: ClienteService) {
     this.checkScreenSize();
   }
 
   ngOnInit(): void {
-    this.getVehiculos();
+    this.getClientes();
   }
 
-  getVehiculos(): void {
-    this.vehiculoService.getVehiculos().subscribe({
+  getClientes(): void {
+    this.clienteService.getClientes().subscribe({
+      next: (clientes: Cliente[]) => {
+        this.clientes = clientes;
+      },
+      error: (err) => {
+        console.error(err);
+      },
+      complete: () => {
+        this.paginaCargada = true;
+      }
+    });
+  }
+
+  getVehiculosCliente(): void {
+    this.paginaCargada = false;
+    this.vehiculoService.getVehiculoCliente(this.idCliente).subscribe({
       next: (vehiculos: Vehiculo[]) => {
         console.log(vehiculos);
 
@@ -33,9 +57,14 @@ export class ListarVehiculoComponent implements OnInit {
         console.error(err);
       },
       complete: () => {
-
+        this.paginaCargada = true;
       }
     })
+  }
+
+  editVehiculo(idVehiculo: number): void {
+    const encryptedId = this.encryptionService.encrypt(idVehiculo.toString());
+    this.router.navigate([`/admin/vehiculos/editar/${encryptedId}`]);
   }
 
   @HostListener('window:resize', ['$event'])
@@ -45,9 +74,6 @@ export class ListarVehiculoComponent implements OnInit {
 
   checkScreenSize() {
     this.isSmallScreen = window.innerWidth < 768; // Cambia 768 al tamaño que desees
-  }
-
-  deleteVehiculo(id: number): void {
   }
 
 }

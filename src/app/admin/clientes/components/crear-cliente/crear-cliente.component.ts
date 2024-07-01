@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Cliente } from '../../../../core/models/cliente.model';
 import { ClienteService } from '../../../../core/services/cliente.service';
 import { ModalService } from '../../../../core/services/modal.service';
@@ -21,8 +21,8 @@ export class CrearClienteComponent {
   esModoEditar: boolean = false;
   clienteId: number | null = null;
   usuarioId: number = 0;
+
   private encryptionService = inject(EncryptionService);
-  private router = inject(Router);
   private route = inject(ActivatedRoute);
 
   constructor(private formBuilder: FormBuilder, private clienteService: ClienteService, private modal: ModalService) {
@@ -45,7 +45,6 @@ export class CrearClienteComponent {
 
   }
 
-
   private buildForm(): void {
     this.formularioCliente = this.formBuilder.group({
       cedula: [null, [Validators.required, Validators.pattern(/^\d{10}$/)]],
@@ -61,18 +60,7 @@ export class CrearClienteComponent {
     if (this.clienteId) {
       this.clienteService.getCliente(this.clienteId).subscribe(cliente => {
         this.usuarioId = cliente.usuario.id_usuario;
-        this.formularioCliente.patchValue(
-          {
-            cedula: cliente.usuario.cedula,
-            nombres: cliente.usuario.nombres,
-            apellido_p: cliente.usuario.apellido_p,
-            apellido_m: cliente.usuario.apellido_m,
-            correo_electronico: cliente.usuario.correo_electronico,
-            celular: cliente.usuario.celular,
-            id_usuario: cliente.usuario.id_usuario
-          }
-        );
-
+        this.formularioCliente.patchValue(cliente.usuario);
         this.paginaCargada = true;
       });
     }

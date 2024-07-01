@@ -23,7 +23,8 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzCarouselModule } from 'ng-zorro-antd/carousel';
-
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 
 
 @NgModule({
@@ -52,6 +53,8 @@ import { NzCarouselModule } from 'ng-zorro-antd/carousel';
     NzSpinModule,
     NzBreadCrumbModule,
     NzCarouselModule,
+    NzDatePickerModule,
+    NzDropDownModule
   ],
   exports: [
     NzButtonModule,
@@ -76,6 +79,8 @@ import { NzCarouselModule } from 'ng-zorro-antd/carousel';
     NzSpinModule,
     NzBreadCrumbModule,
     NzCarouselModule,
+    NzDatePickerModule,
+    NzDropDownModule
   ]
 })
 export class NgZorroModule { }

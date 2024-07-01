@@ -24,6 +24,10 @@ export class VehiculoService {
     return this.http.get<Vehiculo[]>(`${this.apiUrl}/cliente/${id_cliente}`);
   }
 
+  getVehiculo(idVehiculo: number): Observable<Vehiculo> {
+    return this.http.get<Vehiculo>(`${this.apiUrl}/${idVehiculo}`);
+  }
+
   createVehiculo(vehiculo: createVehiculoDTO): Observable<any> {
     const json = JSON.stringify(vehiculo);
     const headers = new HttpHeaders().set('Content-Type', 'application/json');

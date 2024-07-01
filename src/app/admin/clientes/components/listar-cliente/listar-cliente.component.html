@@ -5,13 +5,18 @@
 </nz-spin>
 
 <div nz-row *ngIf="paginaCargada">
-    <nz-table nz-col #tablaClientes [nzData]="clientes" [nzBordered]="true"
+    <nz-table nz-col #tablaClientes [nzData]="clientesFiltrados" [nzBordered]="true"
         [nzScroll]="isSmallScreen ? { x: '1000px' } : {}">
         <thead>
             <tr>
                 <th>Cédula</th>
                 <th>Nombres</th>
-                <th>Apellidos</th>
+                <th nzCustomFilter>Apellidos
+                    <nz-filter-trigger [(nzVisible)]="activarBuscador" [nzActive]="valorBusqueda.length > 0"
+                        [nzDropdownMenu]="menu">
+                        <span nz-icon nzType="search"></span>
+                    </nz-filter-trigger>
+                </th>
                 <th>Correo E.</th>
                 <th>Celular</th>
                 <th>Acciones</th>
@@ -31,5 +36,16 @@
             </tr>
         </tbody>
     </nz-table>
+
+    <nz-dropdown-menu #menu="nzDropdownMenu">
+        <div class="ant-table-filter-dropdown">
+            <div class="search-box">
+                <input type="text" nz-input placeholder="Apellidos" [(ngModel)]="valorBusqueda" />
+                <button nz-button nzSize="small" nzType="primary" (click)="buscar()"
+                    class="search-button">Buscar</button>
+                <button nz-button nzSize="small" (click)="limpiarBusqueda()">Borrar</button>
+            </div>
+        </div>
+    </nz-dropdown-menu>
 
 </div>
