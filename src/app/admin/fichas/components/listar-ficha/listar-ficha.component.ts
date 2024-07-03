@@ -1,6 +1,7 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { Ficha } from '../../../../core/models/ficha.model';
 import { FichaService } from '../../../../core/services/ficha.service';
+import { ModalService } from '../../../../core/services/modal.service';
 
 
 @Component({
@@ -13,6 +14,8 @@ export class ListarFichaComponent implements OnInit {
   fichas: Ficha[] = [];
   parametro: string = '';
 
+  private modal = inject(ModalService);
+
   isSmallScreen: boolean = false;
 
 
@@ -24,6 +27,11 @@ export class ListarFichaComponent implements OnInit {
   }
 
   getFichasCliente(): void {
+    const parametro = this.parametro.trim();
+    if (parametro.length === 0) {
+      this.modal.mostrar('warning', 'Debe ingresar un parámetro de búsqueda');
+      return;
+    }
     this.paginaCargada = false;
     this.fichaService.getFichasCliente(this.parametro).subscribe({
       next: (fichas: Ficha[]) => {
@@ -36,6 +44,7 @@ export class ListarFichaComponent implements OnInit {
         console.error(err);
       },
       complete: () => {
+        this.fichas.length === 0 ? this.modal.mostrar('info', 'No existen fichas para este cliente') : null;
       }
     });
   }
@@ -56,8 +65,6 @@ export class ListarFichaComponent implements OnInit {
     });
   }
 
-
-
   @HostListener('window:resize', ['$event'])
   onresize() {
     this.checkScreenSize();
@@ -65,9 +72,6 @@ export class ListarFichaComponent implements OnInit {
 
   checkScreenSize() {
     this.isSmallScreen = window.innerWidth < 768; // Cambia 768 al tamaño que desees
-  }
-
-  deleteFicha(id: number): void {
   }
 
 }

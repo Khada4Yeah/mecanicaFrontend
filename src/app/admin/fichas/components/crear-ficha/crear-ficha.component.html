@@ -64,7 +64,7 @@
     <div formArrayName="reparaciones">
         <div *ngFor="let reparacion of reparaciones.controls; let i = index" [formGroupName]="i">
             <input formControlName="id_reparacion" hidden />
-            @if ([4, 9, 13, 14, 15, 23].includes(reparacion.get('id_reparacion')?.value)) {
+            @if ([4, 9, 13, 14, 15, 23, 24, 25, 26].includes(reparacion.get('id_reparacion')?.value)) {
 
             <nz-form-label>{{ getNombreReparacion(reparacion.get('id_reparacion')?.value) }}</nz-form-label>
 
@@ -112,6 +112,20 @@
                         <ng-template #ruedasErrorTpl let-control>
                             @if (control.errors?.['required']) {
                             Selecciona al menos una rueda
+                            }
+                        </ng-template>
+                    </nz-form-item>
+
+                    <nz-form-item *ngIf="reparacion.get('informacion_adicional')?.get('zona')">
+                        <nz-form-label>Zona:</nz-form-label>
+                        <nz-form-control [nzErrorTip]="zonaErrorTpl">
+                            <nz-select formControlName="zona" nzPlaceHolder="Seleccione la zona" nzMode="multiple"
+                                [nzOptions]="[{label: 'FRENTE', value: 'FRENTE'}, {label: 'POSTERIOR', value: 'POSTERIOR'}]">
+                            </nz-select>
+                        </nz-form-control>
+                        <ng-template #zonaErrorTpl let-control>
+                            @if (control.errors?.['required']) {
+                            Selecciona una zona
                             }
                         </ng-template>
                     </nz-form-item>

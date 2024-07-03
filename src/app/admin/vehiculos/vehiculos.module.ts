@@ -16,6 +16,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule,
     FormsModule
   ],
-  declarations: [ListarVehiculoComponent, CrearVehiculoComponent]
+  declarations: [ListarVehiculoComponent, CrearVehiculoComponent],
+
 })
 export class VehiculosModule { }

@@ -16,3 +16,7 @@ export interface Vehiculo {
 export interface createVehiculoDTO extends Omit<Vehiculo, 'id_vehiculo | created_at | updated_at | cliente'> {
     id_cliente: number;
 }
+
+export interface updateVehiculoDTO extends Partial<createVehiculoDTO> {
+
+}

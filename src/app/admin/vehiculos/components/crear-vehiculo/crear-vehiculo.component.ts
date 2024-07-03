@@ -7,6 +7,7 @@ import { ClienteService } from '../../../../core/services/cliente.service';
 import { Cliente } from '../../../../core/models/cliente.model';
 import { EncryptionService } from '../../../../core/services/encryption.service';
 import { RequestStatus } from '../../../../core/models/request-status.model';
+import { ModalService } from '../../../../core/services/modal.service';
 
 @Component({
   selector: 'app-crear-vehiculo',
@@ -24,6 +25,7 @@ export class CrearVehiculoComponent implements OnInit {
 
   private encryptionService = inject(EncryptionService);
   private route = inject(ActivatedRoute);
+  private modal = inject(ModalService);
 
   constructor(private formBuilder: FormBuilder, private vehiculoService: VehiculoService, private router: Router, private clienteService: ClienteService) {
     this.buildForm();
@@ -40,6 +42,7 @@ export class CrearVehiculoComponent implements OnInit {
           this.loadVehiculo();
         }
       } else {
+        this.getClientes();
         this.paginaCargada = true;
       }
     });
@@ -92,22 +95,53 @@ export class CrearVehiculoComponent implements OnInit {
     });
   }
 
+  // Guardar o actualizar vehiculo
   saveVehiculo(): void {
+    this.status = 'loading';
     if (this.formularioVehiculo.valid) {
-      this.vehiculoService.createVehiculo(this.formularioVehiculo.value).subscribe({
-        next: (vehiculo) => {
-          console.log(vehiculo);
-          this.router.navigate(['/admin/vehiculos']);
-        },
-        error: (err) => {
-          console.error(err);
-        },
-        complete: () => {
+      if (this.esModoEditar) {
+        // Llamar al servicio de actualización de vehiculo
+        this.vehiculoService.updateVehiculo(this.formularioVehiculo.value, Number(this.vehiculoId)).subscribe({
+          next: (vehiculo) => {
+            this.status = 'success';
+            this.modal.mostrar('success', 'Vehiculo actualizado correctamente', '/admin/vehiculos/lista');
+          },
+          error: (error) => {
+            this.status = 'failed';
+            this.modalError(error);
+          },
+          complete: () => {
 
-        }
-      });
+          }
+        });
+      }
+      else {
+        this.vehiculoService.createVehiculo(this.formularioVehiculo.value).subscribe({
+          next: (vehiculo) => {
+            this.status = 'success';
+            this.modal.mostrar('success', 'Vehiculo creado correctamente', '/admin/vehiculos/lista');
+          },
+          error: (error) => {
+            this.status = 'failed';
+            // En caso de error, se muestra un modal con el mensaje de error
+            this.modalError(error);
+          },
+          complete: () => {
+
+          }
+        });
+      }
     }
   }
 
+  private modalError(error: any): void {
+    let string = error.error.message + '\n';
+    if (error.error.errors) {
+      Object.keys(error.error.errors).forEach((key) => {
+        string += `${error.error.errors[key]}\n`;
+      });
+    }
+    this.modal.mostrar('error', string);
+  }
 
 }

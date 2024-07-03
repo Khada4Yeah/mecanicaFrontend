@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
+import { HttpClient, HttpHeaders, } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment.development';
 import { Cliente, CreateClienteDTO, UpdateClienteDTO } from '../models/cliente.model';
+import { checkToken } from '../../interceptors/token.interceptor';
+
 
 
 @Injectable({
@@ -17,23 +19,21 @@ export class ClienteService {
   }
 
   getClientes(): Observable<Cliente[]> {
-    return this.http.get<Cliente[]>(this.apiUrl);
+    return this.http.get<Cliente[]>(this.apiUrl, { context: checkToken() });
   }
 
   getCliente(id_cliente: number): Observable<Cliente> {
-    return this.http.get<Cliente>(`${this.apiUrl}/${id_cliente}`);
+    return this.http.get<Cliente>(`${this.apiUrl}/${id_cliente}`, { context: checkToken() });
   }
 
   createCliente(cliente: CreateClienteDTO): Observable<any> {
     const json = JSON.stringify(cliente);
-    const params = new HttpParams().set('content-type', 'application/json');
-    console.log(json);
-
-    return this.http.post<Cliente>(this.apiUrl, json, { params });
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.post<Cliente>(this.apiUrl, json, { headers, context: checkToken() });
   }
 
   updateCliente(cliente: UpdateClienteDTO, id_usuario: number): Observable<any> {
     const json = JSON.stringify(cliente);
-    return this.http.patch(`${this.apiUrl}/${id_usuario}`, json);
+    return this.http.patch(`${this.apiUrl}/${id_usuario}`, json, { context: checkToken() });
   }
 }

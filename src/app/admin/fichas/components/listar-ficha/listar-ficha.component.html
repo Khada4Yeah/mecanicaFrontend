@@ -14,7 +14,7 @@
 <nz-spin [nzSpinning]="!paginaCargada" [nzTip]="'Cargando fichas...'">
 </nz-spin>
 
-<div nz-row *ngIf="paginaCargada && fichas.length > 0">
+<div nz-row *ngIf="paginaCargada">
     <nz-table nz-col #tablaFichas [nzData]="fichas" [nzBordered]="true"
         [nzScroll]="isSmallScreen ? { x: '1000px' } : {}">
         <thead>
@@ -32,7 +32,8 @@
                 <td>{{ ficha.numero_ficha }}</td>
                 <td>{{ ficha.fecha }}</td>
                 <td>{{ ficha.cliente.usuario.cedula }}</td>
-                <td>{{ ficha.cliente.usuario.nombres + ' ' + ficha.cliente.usuario.apellido_p }}</td>
+                <td>{{ ficha.cliente.usuario.nombres + ' ' + ficha.cliente.usuario.apellido_p + ' ' +
+                    ficha.cliente.usuario.apellido_m}}</td>
                 <td>{{ ficha.vehiculo.placa }}</td>
                 <td>
                     <button nz-button nzType="primary" nzSize="small" (click)="pdfFicha(ficha.id_ficha)">

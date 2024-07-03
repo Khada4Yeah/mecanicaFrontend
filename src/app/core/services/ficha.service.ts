@@ -3,6 +3,7 @@ import { environment } from '../../../environments/environment.development';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Ficha, createFichaDTO } from '../models/ficha.model';
+import { checkToken } from '../../interceptors/token.interceptor';
 
 @Injectable({
   providedIn: 'root'
@@ -14,21 +15,21 @@ export class FichaService {
   constructor() { }
 
   getFichas(): Observable<Ficha[]> {
-    return this.http.get<Ficha[]>(this.apiUrl);
+    return this.http.get<Ficha[]>(this.apiUrl, { context: checkToken() });
   }
 
   getFichasCliente(param: string): Observable<Ficha[]> {
-    return this.http.get<Ficha[]>(`${this.apiUrl}/cliente/${param}`);
+    return this.http.get<Ficha[]>(`${this.apiUrl}/cliente/${param}`, { context: checkToken() });
   }
 
   pdfFicha(id_ficha: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/pdf/${id_ficha}`, { responseType: 'blob' });
+    return this.http.get(`${this.apiUrl}/pdf/${id_ficha}`, { responseType: 'blob', context: checkToken() });
   }
 
   createFicha(ficha: createFichaDTO): Observable<any> {
     const json = JSON.stringify(ficha);
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.http.post<Ficha>(`${this.apiUrl}`, json, { headers });
+    return this.http.post<Ficha>(`${this.apiUrl}`, json, { headers, context: checkToken() });
   }
 
 }

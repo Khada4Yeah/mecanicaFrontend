@@ -66,7 +66,7 @@ export class CrearClienteComponent {
     }
   }
 
-  //Guardar cliente
+  //Guardar o actualizar cliente
   saveCliente(): void {
     this.status = 'loading';
     if (this.formularioCliente.valid) {

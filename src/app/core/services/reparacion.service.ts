@@ -3,6 +3,7 @@ import { environment } from '../../../environments/environment.development';
 import { Observable } from 'rxjs';
 import { Reparacion } from '../models/reparacion.model';
 import { HttpClient } from '@angular/common/http';
+import { checkToken } from '../../interceptors/token.interceptor';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,6 @@ export class ReparacionService {
   constructor() { }
 
   getReparaciones(): Observable<Reparacion[]> {
-    return this.http.get<Reparacion[]>(this.apiUrl);
+    return this.http.get<Reparacion[]>(this.apiUrl, { context: checkToken() });
   }
 }

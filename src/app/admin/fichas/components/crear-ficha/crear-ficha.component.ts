@@ -147,7 +147,13 @@ export class CrearFichaComponent implements OnInit {
       return this.formBuilder.group({
         ruedas: [[], Validators.required],
       });
-    } else {
+    }
+    else if ([24, 25, 26].includes(key)) {
+      return this.formBuilder.group({
+        zona: [null, Validators.required],
+      });
+    }
+    else {
       return this.formBuilder.control(null);
     }
 

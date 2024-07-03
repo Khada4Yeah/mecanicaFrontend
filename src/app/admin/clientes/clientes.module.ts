@@ -5,10 +5,6 @@ import { ListarClienteComponent } from './components/listar-cliente/listar-clien
 import { CrearClienteComponent } from './components/crear-cliente/crear-cliente.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ClientesRoutingModule } from './clientes-routing.module';
-import { ModalService } from '../../core/services/modal.service';
-import { modalServiceFactory } from '../../core/services/modal.service.provider';
-import { NzModalService } from 'ng-zorro-antd/modal';
-
 
 
 @NgModule({
@@ -20,10 +16,5 @@ import { NzModalService } from 'ng-zorro-antd/modal';
     ReactiveFormsModule,
     FormsModule
   ],
-  providers: [{
-    provide: ModalService,
-    useFactory: modalServiceFactory,
-    deps: [NzModalService]
-  }]
 })
 export class ClientesModule { }

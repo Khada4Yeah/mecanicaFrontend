@@ -25,7 +25,7 @@ export class AuthService {
     return this.http.post<Token>(`${this.apiUrl}/login`, json, { headers }).pipe(
       tap(response => {
         this.tokenService.saveToken(response.token);
-      })
+      }),
     );
   }
 
@@ -34,8 +34,10 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/logout`, null, { headers }).pipe(
       tap(() => {
         this.tokenService.removeToken();
-      }));
+      },
+      ));
   }
+
 
 
 }

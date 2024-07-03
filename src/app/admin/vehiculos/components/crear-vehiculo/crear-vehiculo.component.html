@@ -104,12 +104,13 @@
 
     <nz-form-item>
         <nz-form-control>
-            <button nz-button nzType="primary" [disabled]="!formularioVehiculo.valid">
-                Crear Vehículo
+            <button nz-button nzType="primary" [disabled]="!formularioVehiculo.valid"
+                [nzLoading]="status === 'loading'">
+                Guardar Vehículo
             </button>
 
             <button nz-button>
-                <a routerLink="../">Cancelar</a>
+                <a routerLink="../../lista">Cancelar</a>
             </button>
         </nz-form-control>
     </nz-form-item>

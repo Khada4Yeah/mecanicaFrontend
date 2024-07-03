@@ -23,6 +23,7 @@ import { CrearFichaComponent } from './components/crear-ficha/crear-ficha.compon
     FichasRoutingModule,
     ReactiveFormsModule,
     FormsModule
-  ]
+  ],
+
 })
 export class FichasModule { }

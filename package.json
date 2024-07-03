@@ -24,6 +24,7 @@
     "crypto-js": "^4.2.0",
     "date-fns": "^3.6.0",
     "express": "^4.17.1",
+    "jwt-decode": "^4.0.0",
     "ng-zorro-antd": "^17.4.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
@@ -42,7 +43,9 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.4.2"
+    "typescript": "~5.4.2",
+    "jwt-decode": "^4.0.0",
+    "date-fns": "^3.6.0"
   },
   "engines": {
     "node": "20.14.0",
