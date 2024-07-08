@@ -4,7 +4,7 @@
 <nz-spin [nzSpinning]="!paginaCargada" [nzTip]="'Cargando fichas...'">
 </nz-spin>
 
-<nz-select nzShowSearch nzAllowClear nzPlaceHolder="Selecciona un cliente" [(ngModel)]="idCliente"
+<nz-select nzShowSearch nzPlaceHolder="Selecciona un cliente" [(ngModel)]="idCliente"
     (ngModelChange)="getVehiculosCliente()" *ngIf="clientes.length !== 0">
     <nz-option *ngFor="let cliente of clientes"
         [nzLabel]="cliente.usuario.nombres + ' ' + cliente.usuario.apellido_p + ' ' + cliente.usuario.apellido_m"
@@ -13,7 +13,7 @@
 </nz-select>
 
 <div>
-    <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Selecciona un vehículo" [(ngModel)]="idVehiculo"
+    <nz-select nzShowSearch nzPlaceHolder="Selecciona un vehículo" [(ngModel)]="idVehiculo"
         (ngModelChange)="getFichasVehiculo()" *ngIf="clientes.length !== 0">
         <nz-option *ngFor="let vehiculo of vehiculos" [nzLabel]="vehiculo.placa" [nzValue]="vehiculo.id_vehiculo">
         </nz-option>

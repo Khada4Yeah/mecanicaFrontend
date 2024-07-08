@@ -19,7 +19,7 @@ export class FichaService {
   }
 
   getFichasVehiculo(idVehiculo: number): Observable<Ficha[]> {
-    return this.http.get<Ficha[]>(`${this.apiUrl}/cliente/${idVehiculo}`, { context: checkToken() });
+    return this.http.get<Ficha[]>(`${this.apiUrl}/cliente/vehiculo/${idVehiculo}`, { context: checkToken() });
   }
 
   pdfFicha(id_ficha: number): Observable<any> {

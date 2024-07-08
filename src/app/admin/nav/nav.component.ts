@@ -9,18 +9,24 @@ import { Router } from '@angular/router';
 })
 export class NavComponent {
   isCollapsed = false;
+  isLoading = false;
+
   private authService = inject(AuthService);
   private router = inject(Router);
 
+
   logout(): void {
+    this.isLoading = true;
     this.authService.logout().subscribe(
       {
         next: (data) => {
         },
         error: (err) => {
+          this.isLoading = false;
           console.error(err);
         },
         complete: () => {
+          this.isLoading = false;
           this.router.navigate(['/login']);
         }
       }

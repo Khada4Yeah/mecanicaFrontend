@@ -5,6 +5,7 @@ import { Cliente } from '../../../../core/models/cliente.model';
 import { ClienteService } from '../../../../core/services/cliente.service';
 import { EncryptionService } from '../../../../core/services/encryption.service';
 import { Router } from '@angular/router';
+import { ModalService } from '../../../../core/services/modal.service';
 
 @Component({
   selector: 'app-listar-cliente',
@@ -20,6 +21,7 @@ export class ListarClienteComponent implements OnInit {
 
   private encryptionService = inject(EncryptionService);
   private router = inject(Router);
+  private modal = inject(ModalService);
 
   isSmallScreen: boolean = false;
 
@@ -36,9 +38,8 @@ export class ListarClienteComponent implements OnInit {
       next: (clientes: Cliente[]) => {
         this.clientes = clientes;
       },
-      error: (err) => {
-        console.error(err);
-      },
+      error: (error) => this.modal.mostrar('error', 'Error al cargar los clientes')
+      ,
       complete: () => {
         this.clientesFiltrados = [...this.clientes];
         this.paginaCargada = true;

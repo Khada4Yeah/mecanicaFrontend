@@ -62,14 +62,18 @@ export class CrearFichaComponent implements OnInit {
 
   private setupFormListeners(): void {
     this.formularioFicha.get('ficha.id_cliente')?.valueChanges.pipe(
-      tap(() => this.paginaCargada = false),
+      tap(() => {
+        this.paginaCargada = false;
+        // Resetear el control de id_vehiculo cuando cambia el cliente
+        this.formularioFicha.get('ficha.id_vehiculo')?.reset();
+      }),
       switchMap(id_cliente => this.vehiculoService.getVehiculoCliente(id_cliente)),
       tap(vehiculos => {
         this.vehiculos = vehiculos;
         this.paginaCargada = true;
       }),
       catchError(err => {
-        console.error(err);
+        this.modal.mostrar('error', 'Error al cargar los datos');
         return of([]);
       })
     ).subscribe();
@@ -84,7 +88,7 @@ export class CrearFichaComponent implements OnInit {
         this.setReparaciones();
       }),
       catchError(err => {
-        console.error(err);
+        this.modal.mostrar('error', 'Error al cargar los datos');
         return of([]);
       })
     ).subscribe();
@@ -146,6 +150,10 @@ export class CrearFichaComponent implements OnInit {
     });
   }
 
+  filterOption(inputValue: string, item: TransferItem): boolean {
+    return item.title.toLowerCase().indexOf(inputValue.toLowerCase()) > -1;
+  }
+
   getNombreReparacion(id_reparacion: number): string {
     return this.listaReparaciones.find(reparacion => reparacion.id_reparacion === id_reparacion)?.tipo_reparacion || '';
   }
@@ -166,7 +174,7 @@ export class CrearFichaComponent implements OnInit {
       ).subscribe();
     } else {
       this.status = 'failed';
-      this.modal.mostrar('error', 'Debe seleccionar al menos una reparación o agregar información adicional');
+      this.modal.mostrar('error', 'Debe seleccionar al menos una reparación o agregar información en Otros');
     }
   }
 

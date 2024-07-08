@@ -11,7 +11,7 @@
             <nz-form-control [nzErrorTip]="clienteErrorTpl">
                 <nz-select nzShowSearch formControlName="id_cliente" nzPlaceHolder="Selecciona un cliente">
                     <nz-option *ngFor="let cliente of clientes"
-                        [nzLabel]="cliente.usuario.nombres + ' ' + cliente.usuario.apellido_p"
+                        [nzLabel]="cliente.usuario.nombres + ' ' + cliente.usuario.apellido_p + ' ' + cliente.usuario.apellido_m"
                         [nzValue]="cliente.id_cliente">
                     </nz-option>
                 </nz-select>
@@ -56,7 +56,8 @@
     </div>
 
     <nz-form-item>
-        <nz-transfer [nzDataSource]="listaReparacionesTransfer" nzShowSearch
+        <nz-form-label>Reparaciones</nz-form-label>
+        <nz-transfer [nzDataSource]="listaReparacionesTransfer" nzShowSearch [nzFilterOption]="filterOption"
             [nzListStyle]="{ 'width.px': 270, 'height.px': 300 }" (nzChange)="handleTransferChange($event)">
         </nz-transfer>
     </nz-form-item>
@@ -137,8 +138,8 @@
 
     <nz-form-item>
         <nz-form-control>
-            <button nz-button nzType="primary" [disabled]="!formularioFicha.valid"
-                [nzLoading]="status === 'loading'">Crear Ficha
+            <button nz-button nzType="primary" [disabled]="!formularioFicha.valid" [nzLoading]="status === 'loading'">
+                Crear Ficha
             </button>
 
             <button nz-button (click)="cancelar()">

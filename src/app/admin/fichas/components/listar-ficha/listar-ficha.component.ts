@@ -9,7 +9,6 @@ import { Vehiculo } from '../../../../core/models/vehiculo.model';
 import { ClienteService } from '../../../../core/services/cliente.service';
 import { VehiculoService } from '../../../../core/services/vehiculo.service';
 
-
 @Component({
   selector: 'app-listar-ficha',
   templateUrl: './listar-ficha.component.html',
@@ -24,14 +23,12 @@ export class ListarFichaComponent implements OnInit {
   idCliente: number = 0;
   idVehiculo: number = 0;
 
-
   private modal = inject(ModalService);
   private mensaje = inject(NzMessageService);
   private clienteService = inject(ClienteService);
   private vehiculoService = inject(VehiculoService);
 
   isSmallScreen: boolean = false;
-
 
   constructor(private fichaService: FichaService) {
     this.checkScreenSize();
@@ -46,10 +43,11 @@ export class ListarFichaComponent implements OnInit {
       next: (clientes: Cliente[]) => {
         this.clientes = clientes;
       },
-      error: (err) => {
+      error: (error) => {
         this.modal.mostrar('error', 'Error al cargar los clientes');
       },
       complete: () => {
+        this.idVehiculo = 0;
         this.paginaCargada = true;
       }
     });
@@ -57,6 +55,9 @@ export class ListarFichaComponent implements OnInit {
 
   getVehiculosCliente(): void {
     this.paginaCargada = false;
+    this.idVehiculo = 0; // Resetea el idVehiculo
+    this.vehiculos = []; // Limpia el array de vehiculos
+    this.fichas = []; // Limpia el array de fichas
     this.vehiculoService.getVehiculoCliente(this.idCliente).subscribe({
       next: (vehiculos: Vehiculo[]) => {
         this.vehiculos = vehiculos;
@@ -66,7 +67,6 @@ export class ListarFichaComponent implements OnInit {
         this.modal.mostrar('error', 'Error al cargar los vehículos');
       },
       complete: () => {
-        this.getFichasVehiculo();
         this.paginaCargada = true;
       }
     })
@@ -117,5 +117,4 @@ export class ListarFichaComponent implements OnInit {
   checkScreenSize() {
     this.isSmallScreen = window.innerWidth < 768; // Cambia 768 al tamaño que desees
   }
-
 }

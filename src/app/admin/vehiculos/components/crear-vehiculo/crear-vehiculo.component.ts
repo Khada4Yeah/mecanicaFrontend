@@ -70,7 +70,7 @@ export class CrearVehiculoComponent implements OnInit {
 
         },
         error: (err) => {
-          console.error(err);
+          this.modal.mostrar('error', 'Error al cargar los datos del vehiculo');
         },
         complete: () => {
           this.paginaCargada = true;
@@ -86,7 +86,7 @@ export class CrearVehiculoComponent implements OnInit {
         this.clientes = clientes;
       },
       error: (err) => {
-        console.error(err);
+        this.modal.mostrar('error', 'Error al cargar los datos de los clientes');
       },
       complete: () => {
 

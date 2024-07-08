@@ -61,5 +61,15 @@
                 <router-outlet></router-outlet>
             </div>
         </nz-content>
+        <nz-footer class="app-footer">
+            <div class="footer-content">
+                &copy; 2024 Mecánica Espinoza. Todos los derechos reservados.
+            </div>
+        </nz-footer>
     </nz-layout>
+    <div *ngIf="isLoading" class="loading-overlay">
+        <div>
+            <nz-spin [nzSpinning]="isLoading" nzTip="Cerrando sesión..."></nz-spin>
+        </div>
+    </div>
 </nz-layout>

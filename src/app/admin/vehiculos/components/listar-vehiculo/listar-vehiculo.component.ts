@@ -5,6 +5,7 @@ import { Cliente } from '../../../../core/models/cliente.model';
 import { ClienteService } from '../../../../core/services/cliente.service';
 import { EncryptionService } from '../../../../core/services/encryption.service';
 import { Router } from '@angular/router';
+import { ModalService } from '../../../../core/services/modal.service';
 
 @Component({
   selector: 'app-listar-vehiculo',
@@ -20,6 +21,7 @@ export class ListarVehiculoComponent implements OnInit {
   isSmallScreen: boolean = false;
 
   private encryptionService = inject(EncryptionService);
+  private modal = inject(ModalService);
   private router = inject(Router);
 
   constructor(private vehiculoService: VehiculoService, private clienteService: ClienteService) {
@@ -36,7 +38,7 @@ export class ListarVehiculoComponent implements OnInit {
         this.clientes = clientes;
       },
       error: (err) => {
-        console.error(err);
+        this.modal.mostrar('error', 'Error al cargar los clientes')
       },
       complete: () => {
         this.paginaCargada = true;
@@ -48,13 +50,11 @@ export class ListarVehiculoComponent implements OnInit {
     this.paginaCargada = false;
     this.vehiculoService.getVehiculoCliente(this.idCliente).subscribe({
       next: (vehiculos: Vehiculo[]) => {
-
-
         this.vehiculos = vehiculos;
         this.paginaCargada = true;
       },
       error: (err) => {
-        console.error(err);
+        this.modal.mostrar('error', 'Error al cargar los vehículos del cliente');
       },
       complete: () => {
         this.paginaCargada = true;
