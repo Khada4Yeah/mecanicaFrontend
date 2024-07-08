@@ -2,6 +2,12 @@ import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { Ficha } from '../../../../core/models/ficha.model';
 import { FichaService } from '../../../../core/services/ficha.service';
 import { ModalService } from '../../../../core/services/modal.service';
+import { RequestStatus } from '../../../../core/models/request-status.model';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { Cliente } from '../../../../core/models/cliente.model';
+import { Vehiculo } from '../../../../core/models/vehiculo.model';
+import { ClienteService } from '../../../../core/services/cliente.service';
+import { VehiculoService } from '../../../../core/services/vehiculo.service';
 
 
 @Component({
@@ -10,11 +16,19 @@ import { ModalService } from '../../../../core/services/modal.service';
   styleUrl: './listar-ficha.component.scss'
 })
 export class ListarFichaComponent implements OnInit {
-  paginaCargada: boolean = true;
+  paginaCargada: boolean = false;
   fichas: Ficha[] = [];
-  parametro: string = '';
+  status: RequestStatus = 'init';
+  clientes: Cliente[] = [];
+  vehiculos: Vehiculo[] = [];
+  idCliente: number = 0;
+  idVehiculo: number = 0;
+
 
   private modal = inject(ModalService);
+  private mensaje = inject(NzMessageService);
+  private clienteService = inject(ClienteService);
+  private vehiculoService = inject(VehiculoService);
 
   isSmallScreen: boolean = false;
 
@@ -24,41 +38,71 @@ export class ListarFichaComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getClientes();
   }
 
-  getFichasCliente(): void {
-    const parametro = this.parametro.trim();
-    if (parametro.length === 0) {
-      this.modal.mostrar('warning', 'Debe ingresar un parámetro de búsqueda');
-      return;
-    }
-    this.paginaCargada = false;
-    this.fichaService.getFichasCliente(this.parametro).subscribe({
-      next: (fichas: Ficha[]) => {
-        console.log(fichas);
-
-        this.fichas = fichas;
-        this.paginaCargada = true;
+  getClientes(): void {
+    this.clienteService.getClientes().subscribe({
+      next: (clientes: Cliente[]) => {
+        this.clientes = clientes;
       },
       error: (err) => {
-        console.error(err);
+        this.modal.mostrar('error', 'Error al cargar los clientes');
       },
       complete: () => {
-        this.fichas.length === 0 ? this.modal.mostrar('info', 'No existen fichas para este cliente') : null;
+        this.paginaCargada = true;
+      }
+    });
+  }
+
+  getVehiculosCliente(): void {
+    this.paginaCargada = false;
+    this.vehiculoService.getVehiculoCliente(this.idCliente).subscribe({
+      next: (vehiculos: Vehiculo[]) => {
+        this.vehiculos = vehiculos;
+      },
+      error: (err) => {
+        this.paginaCargada = true;
+        this.modal.mostrar('error', 'Error al cargar los vehículos');
+      },
+      complete: () => {
+        this.getFichasVehiculo();
+        this.paginaCargada = true;
+      }
+    })
+  }
+
+  getFichasVehiculo(): void {
+    this.paginaCargada = false;
+    this.fichaService.getFichasVehiculo(this.idVehiculo).subscribe({
+      next: (fichas: Ficha[]) => {
+        this.fichas = fichas;
+      },
+      error: (err) => {
+        this.paginaCargada = true;
+        this.modal.mostrar('error', 'Error al cargar las fichas');
+      },
+      complete: () => {
+        this.paginaCargada = true;
       }
     });
   }
 
   pdfFicha(id_ficha: number): void {
+    this.status = 'loading';
+    this.mensaje.loading('Generando PDF...', { nzDuration: 0 });
     this.fichaService.pdfFicha(id_ficha).subscribe({
       next: (pdf) => {
-        console.log(pdf);
         const file = new Blob([pdf], { type: 'application/pdf' });
         const fileURL = URL.createObjectURL(file);
+        this.status = 'success';
+        this.mensaje.remove();
         window.open(fileURL);
       },
       error: (err) => {
-        console.error(err);
+        this.status = 'failed';
+        this.mensaje.remove();
+        this.modal.mostrar('error', 'Error al generar el PDF');
       },
       complete: () => {
       }

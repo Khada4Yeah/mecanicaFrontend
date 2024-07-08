@@ -1,6 +1,5 @@
 nz-table {
     width: 100%;
-    margin-top: 20px;
 
     th {
         font-weight: bold;
@@ -12,9 +11,13 @@ nz-table {
     }
 }
 
+nz-select {
+    margin-bottom: 15px;
+}
+
 @media (min-width: 576px) {
-    nz-input-group {
-        width: 25%;
+    nz-select {
+        width: 350px;
     }
 
     nz-table {

@@ -48,7 +48,7 @@ export class ListarVehiculoComponent implements OnInit {
     this.paginaCargada = false;
     this.vehiculoService.getVehiculoCliente(this.idCliente).subscribe({
       next: (vehiculos: Vehiculo[]) => {
-        console.log(vehiculos);
+
 
         this.vehiculos = vehiculos;
         this.paginaCargada = true;

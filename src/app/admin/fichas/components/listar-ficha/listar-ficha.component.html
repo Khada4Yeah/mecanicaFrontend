@@ -1,46 +1,55 @@
 <h1>Lista de Fichas</h1>
 <hr>
 
-<nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
-    <input type="text" nz-input placeholder="Ingrese cédula o placa" [(ngModel)]="parametro" />
-</nz-input-group>
-
-<ng-template #suffixIconButton>
-    <button nz-button nzType="primary" nzSearch (click)="getFichasCliente()">
-        <span nz-icon nzType="search"></span>
-    </button>
-</ng-template>
-
 <nz-spin [nzSpinning]="!paginaCargada" [nzTip]="'Cargando fichas...'">
 </nz-spin>
 
-<div nz-row *ngIf="paginaCargada">
-    <nz-table nz-col #tablaFichas [nzData]="fichas" [nzBordered]="true"
-        [nzScroll]="isSmallScreen ? { x: '1000px' } : {}">
-        <thead>
-            <tr>
-                <th>Número Ficha</th>
-                <th>Fecha</th>
-                <th>Cédula</th>
-                <th>Cliente</th>
-                <th>Placa</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor=" let ficha of tablaFichas.data">
-                <td>{{ ficha.numero_ficha }}</td>
-                <td>{{ ficha.fecha }}</td>
-                <td>{{ ficha.cliente.usuario.cedula }}</td>
-                <td>{{ ficha.cliente.usuario.nombres + ' ' + ficha.cliente.usuario.apellido_p + ' ' +
-                    ficha.cliente.usuario.apellido_m}}</td>
-                <td>{{ ficha.vehiculo.placa }}</td>
-                <td>
-                    <button nz-button nzType="primary" nzSize="small" (click)="pdfFicha(ficha.id_ficha)">
-                        Ver Ficha
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </nz-table>
+<nz-select nzShowSearch nzAllowClear nzPlaceHolder="Selecciona un cliente" [(ngModel)]="idCliente"
+    (ngModelChange)="getVehiculosCliente()" *ngIf="clientes.length !== 0">
+    <nz-option *ngFor="let cliente of clientes"
+        [nzLabel]="cliente.usuario.nombres + ' ' + cliente.usuario.apellido_p + ' ' + cliente.usuario.apellido_m"
+        [nzValue]="cliente.id_cliente">
+    </nz-option>
+</nz-select>
+
+<div>
+    <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Selecciona un vehículo" [(ngModel)]="idVehiculo"
+        (ngModelChange)="getFichasVehiculo()" *ngIf="clientes.length !== 0">
+        <nz-option *ngFor="let vehiculo of vehiculos" [nzLabel]="vehiculo.placa" [nzValue]="vehiculo.id_vehiculo">
+        </nz-option>
+    </nz-select>
+</div>
+
+<div *ngIf="paginaCargada">
+
+    <div nz-row>
+        <nz-table #tablaFichas [nzData]="fichas" [nzBordered]="true" [nzScroll]="isSmallScreen ? { x: '1000px' } : {}">
+            <thead>
+                <tr>
+                    <th>Número Ficha</th>
+                    <th>Fecha</th>
+                    <th>Cédula</th>
+                    <th>Cliente</th>
+                    <th>Placa</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor=" let ficha of tablaFichas.data">
+                    <td>{{ ficha.numero_ficha }}</td>
+                    <td>{{ ficha.fecha }}</td>
+                    <td>{{ ficha.cliente.usuario.cedula }}</td>
+                    <td>{{ ficha.cliente.usuario.nombres + ' ' + ficha.cliente.usuario.apellido_p + ' ' +
+                        ficha.cliente.usuario.apellido_m}}</td>
+                    <td>{{ ficha.vehiculo.placa }}</td>
+                    <td>
+                        <button nz-button nzType="primary" nzSize="small" (click)="pdfFicha(ficha.id_ficha)"
+                            [disabled]="status === 'loading'">
+                            Ver Ficha
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
 </div>

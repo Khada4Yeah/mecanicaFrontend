@@ -4,7 +4,7 @@
 <nz-spin [nzSpinning]="!paginaCargada" [nzTip]="'Cargando formulario...'">
 </nz-spin>
 
-<form nz-form nzLayout="vertical" [formGroup]="formularioFicha" *ngIf="paginaCargada">
+<form nz-form nzLayout="vertical" [formGroup]="formularioFicha" *ngIf="paginaCargada" (ngSubmit)="onSubmit()">
     <div formGroupName="ficha">
         <nz-form-item>
             <nz-form-label nzRequired>Cliente</nz-form-label>
@@ -136,6 +136,14 @@
     </div>
 
     <nz-form-item>
-        <button nz-button nzType="primary" (click)="onSubmit()" [disabled]="!formularioFicha.valid">Crear Ficha</button>
+        <nz-form-control>
+            <button nz-button nzType="primary" [disabled]="!formularioFicha.valid"
+                [nzLoading]="status === 'loading'">Crear Ficha
+            </button>
+
+            <button nz-button (click)="cancelar()">
+                Cancelar
+            </button>
+        </nz-form-control>
     </nz-form-item>
 </form>

@@ -26,8 +26,9 @@ export class CrearVehiculoComponent implements OnInit {
   private encryptionService = inject(EncryptionService);
   private route = inject(ActivatedRoute);
   private modal = inject(ModalService);
+  private router = inject(Router);
 
-  constructor(private formBuilder: FormBuilder, private vehiculoService: VehiculoService, private router: Router, private clienteService: ClienteService) {
+  constructor(private formBuilder: FormBuilder, private vehiculoService: VehiculoService, private clienteService: ClienteService) {
     this.buildForm();
   }
 
@@ -63,17 +64,16 @@ export class CrearVehiculoComponent implements OnInit {
     if (this.vehiculoId) {
       this.vehiculoService.getVehiculo(this.vehiculoId).subscribe({
         next: (vehiculo) => {
-          console.log(vehiculo);
 
           this.formularioVehiculo.patchValue(vehiculo);
           this.formularioVehiculo.get('id_cliente')?.setValue(vehiculo.cliente.id_cliente);
-          this.paginaCargada = true;
+
         },
         error: (err) => {
           console.error(err);
         },
         complete: () => {
-
+          this.paginaCargada = true;
         }
       });
     }
@@ -84,7 +84,6 @@ export class CrearVehiculoComponent implements OnInit {
     this.clienteService.getClientes().subscribe({
       next: (clientes: Cliente[]) => {
         this.clientes = clientes;
-        this.paginaCargada = true;
       },
       error: (err) => {
         console.error(err);
@@ -132,6 +131,10 @@ export class CrearVehiculoComponent implements OnInit {
         });
       }
     }
+  }
+
+  cancelar() {
+    this.router.navigate(['admin', 'vehiculos', 'lista']);
   }
 
   private modalError(error: any): void {

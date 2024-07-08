@@ -16,13 +16,11 @@ export class NavComponent {
     this.authService.logout().subscribe(
       {
         next: (data) => {
-          console.log(data);
         },
         error: (err) => {
           console.error(err);
         },
         complete: () => {
-          console.log('Sesión cerrada');
           this.router.navigate(['/login']);
         }
       }

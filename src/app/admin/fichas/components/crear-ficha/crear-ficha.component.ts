@@ -1,17 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+
 import { Cliente } from '../../../../core/models/cliente.model';
 import { Vehiculo } from '../../../../core/models/vehiculo.model';
 import { Reparacion } from '../../../../core/models/reparacion.model';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { RequestStatus } from '../../../../core/models/request-status.model';
+import { TransferItem } from 'ng-zorro-antd/transfer';
+
 import { VehiculoService } from '../../../../core/services/vehiculo.service';
-import { Router } from '@angular/router';
 import { ClienteService } from '../../../../core/services/cliente.service';
 import { ReparacionService } from '../../../../core/services/reparacion.service';
-import { TransferItem } from 'ng-zorro-antd/transfer';
-import { createFichaDTO } from '../../../../core/models/ficha.model';
 import { FichaService } from '../../../../core/services/ficha.service';
-import { format } from 'date-fns';
+import { ModalService } from '../../../../core/services/modal.service';
 
+import { of, switchMap, tap, catchError } from 'rxjs';
 
 @Component({
   selector: 'app-crear-ficha',
@@ -19,31 +22,30 @@ import { format } from 'date-fns';
   styleUrls: ['./crear-ficha.component.scss']
 })
 export class CrearFichaComponent implements OnInit {
-
-  paginaCargada: boolean = false;
+  paginaCargada = false;
   formularioFicha!: FormGroup;
 
   clientes: Cliente[] = [];
   vehiculos: Vehiculo[] = [];
   listaReparaciones: Reparacion[] = [];
   listaReparacionesTransfer: TransferItem[] = [];
-  saveBtnDisabled: boolean = false;
+  status: RequestStatus = 'init';
 
+  private clienteService = inject(ClienteService);
+  private vehiculoService = inject(VehiculoService);
+  private reparacionService = inject(ReparacionService);
+  private fichaService = inject(FichaService);
+  private modal = inject(ModalService);
+  private router = inject(Router);
+  private formBuilder = inject(FormBuilder);
 
-  constructor(private formBuilder: FormBuilder, private vehiculoService: VehiculoService, private clienteService: ClienteService,
-    private reparacionService: ReparacionService, private fichaService: FichaService, private router: Router) {
+  constructor() {
     this.buildForm();
   }
 
   ngOnInit() {
-    this.getClientes();
-    this.formularioFicha.get('ficha.id_cliente')?.valueChanges.subscribe((id_cliente: number) => {
-      console.log('etrando');
-
-      this.paginaCargada = false;
-      this.getVehiculoCliente(id_cliente);
-    });
-    this.getReparaciones();
+    this.loadInitialData();
+    this.setupFormListeners();
   }
 
   private buildForm(): void {
@@ -54,144 +56,131 @@ export class CrearFichaComponent implements OnInit {
         fecha: [null],
         otros: [null]
       }),
-      reparaciones: this.formBuilder.array([], [this.reparacionesValidator()])
+      reparaciones: this.formBuilder.array([], [])
     });
   }
 
-  // Validador personalizado para asegurar que el FormArray tenga al menos un elemento
-  reparacionesValidator(): ValidatorFn {
-    return (formArray: AbstractControl): { [key: string]: any } | null => {
-      return (formArray as FormArray).length > 0 ? null : { 'reparacionesRequired': true };
-    };
-  }
-
-  // Obtiene los clientes
-  getClientes(): void {
-    this.clienteService.getClientes().subscribe({
-      next: (clientes: Cliente[]) => {
-        this.clientes = clientes;
-
-      },
-      error: (err) => {
-        console.error(err);
-      },
-      complete: () => { }
-    });
-  }
-
-  // Obtiene los vehiculos de un cliente
-  getVehiculoCliente(id_cliente: number): void {
-    this.vehiculoService.getVehiculoCliente(id_cliente).subscribe({
-      next: (vehiculos: Vehiculo[]) => {
+  private setupFormListeners(): void {
+    this.formularioFicha.get('ficha.id_cliente')?.valueChanges.pipe(
+      tap(() => this.paginaCargada = false),
+      switchMap(id_cliente => this.vehiculoService.getVehiculoCliente(id_cliente)),
+      tap(vehiculos => {
         this.vehiculos = vehiculos;
-
         this.paginaCargada = true;
-      },
-      error: (err) => {
+      }),
+      catchError(err => {
         console.error(err);
-      },
-      complete: () => { }
-    });
+        return of([]);
+      })
+    ).subscribe();
   }
 
-  // Obtiene todas las reparaciones
-  getReparaciones(): void {
-    this.reparacionService.getReparaciones().subscribe({
-      next: (reparaciones: Reparacion[]) => {
+  private loadInitialData(): void {
+    this.clienteService.getClientes().pipe(
+      tap(clientes => this.clientes = clientes),
+      switchMap(() => this.reparacionService.getReparaciones()),
+      tap(reparaciones => {
         this.listaReparaciones = reparaciones;
         this.setReparaciones();
-
-      },
-      error: (err) => {
+      }),
+      catchError(err => {
         console.error(err);
-      },
-      complete: () => { }
-    });
+        return of([]);
+      })
+    ).subscribe();
   }
 
-  // Setea las reparaciones en el transfer
-  setReparaciones(): void {
-    this.listaReparaciones.forEach((reparacion: Reparacion) => {
-      this.listaReparacionesTransfer.push({
-        key: reparacion.id_reparacion,
-        title: reparacion.tipo_reparacion,
-        direction: 'left'
-      });
-    });
+  private setReparaciones(): void {
+    this.listaReparacionesTransfer = this.listaReparaciones.map(reparacion => ({
+      key: reparacion.id_reparacion,
+      title: reparacion.tipo_reparacion,
+      direction: 'left'
+    }));
     this.paginaCargada = true;
   }
 
-  // Obtiene el control de reparaciones del formulario
   get reparaciones(): FormArray {
-    return <FormArray>this.formularioFicha.get('reparaciones');
+    return this.formularioFicha.get('reparaciones') as FormArray;
   }
 
-  // Agrega una reparacion al formulario
-  addReparacion(id_reparacion: number, nombre_reparacion: string): void {
+  private addReparacion(id_reparacion: number): void {
     const group = this.formBuilder.group({
       id_reparacion: [id_reparacion, Validators.required],
       informacion_adicional: this.createInformacionAdicional(id_reparacion)
     });
     this.reparaciones.push(group);
-    console.log(this.reparaciones);
   }
 
-  // Crea el control de la informacion adicional segun el tipo de reparacion
-  createInformacionAdicional(key: number) {
-    if ([4, 9, 13, 14, 15].includes(key)) {
-      return this.formBuilder.group({
-        kilometraje_actual: [null, [Validators.required, Validators.pattern('^[0-9]*$')]],
-        kilometraje_siguiente: [null, [Validators.required, Validators.pattern('^[0-9]*$')]]
-      });
-    } else if (key === 23) {
-      return this.formBuilder.group({
-        ruedas: [[], Validators.required],
-      });
+  private createInformacionAdicional(key: number): AbstractControl {
+    switch (key) {
+      case 4:
+      case 9:
+      case 13:
+      case 14:
+      case 15:
+        return this.formBuilder.group({
+          kilometraje_actual: [null, [Validators.required, Validators.pattern('^[0-9]*$')]],
+          kilometraje_siguiente: [null, [Validators.required, Validators.pattern('^[0-9]*$')]]
+        });
+      case 23:
+        return this.formBuilder.group({
+          ruedas: [[], Validators.required],
+        });
+      case 24:
+      case 25:
+      case 26:
+        return this.formBuilder.group({
+          zona: [null, Validators.required],
+        });
+      default:
+        return this.formBuilder.control(null);
     }
-    else if ([24, 25, 26].includes(key)) {
-      return this.formBuilder.group({
-        zona: [null, Validators.required],
-      });
-    }
-    else {
-      return this.formBuilder.control(null);
-    }
-
   }
 
   handleTransferChange(ret: {}) {
     this.reparaciones.clear();
     this.listaReparacionesTransfer.forEach((item: TransferItem) => {
       if (item.direction === 'right') {
-        this.addReparacion(Number(item['key']), item['title']);
+        this.addReparacion(Number(item['key']));
       }
     });
   }
 
   getNombreReparacion(id_reparacion: number): string {
-    return this.listaReparaciones.find((reparacion: Reparacion) => reparacion.id_reparacion === id_reparacion)?.tipo_reparacion || '';
+    return this.listaReparaciones.find(reparacion => reparacion.id_reparacion === id_reparacion)?.tipo_reparacion || '';
   }
 
-  onSubmit() {
-    console.log(this.formularioFicha.value);
-
-    if (this.formularioFicha.valid) {
-
-      console.log(this.formularioFicha.get('ficha.fecha')?.value);
-
-      this.fichaService.createFicha(this.formularioFicha.value).subscribe({
-        next: (ficha: any) => {
-          console.log(ficha);
-          this.router.navigate(['/admin/fichas/lista']);
-        },
-        error: (err) => {
-          console.error(err);
-        },
-        complete: () => {
-        }
-      });
-
+  onSubmit(): void {
+    if (this.formularioFicha.valid && (this.reparaciones.length > 0 || this.formularioFicha.get('ficha.otros')?.value)) {
+      this.status = 'loading';
+      this.fichaService.createFicha(this.formularioFicha.value).pipe(
+        tap(() => {
+          this.status = 'success';
+          this.modal.mostrar('success', 'Ficha creada correctamente', '/admin/fichas/lista');
+        }),
+        catchError(error => {
+          this.status = 'failed';
+          this.modalError(error);
+          return of(null);
+        })
+      ).subscribe();
+    } else {
+      this.status = 'failed';
+      this.modal.mostrar('error', 'Debe seleccionar al menos una reparación o agregar información adicional');
     }
   }
 
+  cancelar(): void {
+    this.router.navigate(['admin', 'fichas', 'lista']);
+  }
+
+  private modalError(error: any): void {
+    let errorMsg = `${error.error.message}\n`;
+    if (error.error.errors) {
+      Object.keys(error.error.errors).forEach(key => {
+        errorMsg += `${error.error.errors[key]}\n`;
+      });
+    }
+    this.modal.mostrar('error', errorMsg);
+  }
 }

@@ -32,7 +32,7 @@ export class VehiculoService {
   createVehiculo(vehiculo: createVehiculoDTO): Observable<any> {
     const json = JSON.stringify(vehiculo);
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    console.log(json);
+
     return this.http.post(`${this.apiUrl}`, json, { headers, context: checkToken() });
   }
 

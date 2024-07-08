@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { ActivatedRoute } from '@angular/router';
 import { Cliente } from '../../../../core/models/cliente.model';
+import { RequestStatus } from '../../../../core/models/request-status.model';
+
 import { ClienteService } from '../../../../core/services/cliente.service';
 import { ModalService } from '../../../../core/services/modal.service';
-import { RequestStatus } from '../../../../core/models/request-status.model';
 import { EncryptionService } from '../../../../core/services/encryption.service';
 
 @Component({
@@ -24,6 +25,7 @@ export class CrearClienteComponent {
 
   private encryptionService = inject(EncryptionService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   constructor(private formBuilder: FormBuilder, private clienteService: ClienteService, private modal: ModalService) {
     this.buildForm();
@@ -71,8 +73,6 @@ export class CrearClienteComponent {
     this.status = 'loading';
     if (this.formularioCliente.valid) {
       if (this.esModoEditar) {
-        console.log(this.formularioCliente.value);
-
         //Llamar al servicio de actualización de cliente
         this.clienteService.updateCliente(this.formularioCliente.value, this.usuarioId).subscribe({
           next: (cliente) => {
@@ -83,29 +83,25 @@ export class CrearClienteComponent {
             this.status = 'failed';
             this.modalError(error);
           },
-          complete: () => {
-
-          }
         });
       }
       else {
         this.clienteService.createCliente(this.formularioCliente.value).subscribe({
-          next: (cliente) => {
+          next: () => {
             this.status = 'success';
             this.modal.mostrar('success', 'Cliente creado correctamente', '/admin/clientes/lista');
           },
           error: (error) => {
             this.status = 'failed';
-            // En caso de error, se muestra un modal con el mensaje de error
             this.modalError(error);
-
-          },
-          complete: () => {
-
           }
         });
       }
     }
+  }
+
+  cancelar() {
+    this.router.navigate(['admin', 'clientes', 'lista']);
   }
 
   private modalError(error: any): void {

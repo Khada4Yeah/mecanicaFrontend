@@ -14,8 +14,10 @@
     }
 }
 
-button {
-    margin-left: 5px;
+nz-form-control {
+    button:last-child {
+        margin-left: 5px;
+    }
 }
 
 nz-form-label {

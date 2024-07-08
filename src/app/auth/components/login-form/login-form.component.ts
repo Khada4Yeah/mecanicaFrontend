@@ -38,7 +38,7 @@ export class LoginFormComponent implements OnInit {
       this.authService.login(this.formularioLogin.value.correo_electronico, this.formularioLogin.value.clave).subscribe({
         next: (data) => {
           this.status = 'success';
-          console.log(data);
+
           this.router.navigate(['/admin']);
         },
         error: (err) => {
