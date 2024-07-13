@@ -126,13 +126,13 @@ export class CrearFichaComponent implements OnInit {
           kilometraje_actual: [null, [Validators.required, Validators.pattern('^[0-9]*$')]],
           kilometraje_siguiente: [null, [Validators.required, Validators.pattern('^[0-9]*$')]]
         });
-      case 23:
+      case 21:
         return this.formBuilder.group({
           ruedas: [[], Validators.required],
         });
+      case 22:
+      case 23:
       case 24:
-      case 25:
-      case 26:
         return this.formBuilder.group({
           zona: [null, Validators.required],
         });
