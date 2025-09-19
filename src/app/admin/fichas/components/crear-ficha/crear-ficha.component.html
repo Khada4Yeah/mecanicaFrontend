@@ -5,7 +5,7 @@
 </nz-spin>
 
 <form nz-form nzLayout="vertical" [formGroup]="formularioFicha" *ngIf="paginaCargada" (ngSubmit)="onSubmit()">
-    <div formGroupName="ficha">
+    <div formGroupName="ficha" id="formularioFicha">
         <nz-form-item>
             <nz-form-label nzRequired>Cliente</nz-form-label>
             <nz-form-control [nzErrorTip]="clienteErrorTpl">
@@ -55,17 +55,19 @@
         </nz-form-item>
     </div>
 
-    <nz-form-item>
-        <nz-form-label>Reparaciones</nz-form-label>
-        <nz-transfer [nzDataSource]="listaReparacionesTransfer" nzShowSearch [nzFilterOption]="filterOption"
-            [nzListStyle]="{ 'width.px': 270, 'height.px': 300 }" (nzChange)="handleTransferChange($event)">
-        </nz-transfer>
-    </nz-form-item>
+    <div id="reparacionesTransfer">
+        <nz-form-item>
+            <nz-form-label nzRequired>Reparaciones</nz-form-label>
+            <nz-transfer [nzDataSource]="listaReparacionesTransfer" nzShowSearch [nzFilterOption]="filterOption"
+                (nzChange)="handleTransferChange($event)">
+            </nz-transfer>
+        </nz-form-item>
+    </div>
 
-    <div formArrayName="reparaciones">
+    <div formArrayName="reparaciones" id="formularioReparaciones">
         <div *ngFor="let reparacion of reparaciones.controls; let i = index" [formGroupName]="i">
             <input formControlName="id_reparacion" hidden />
-            @if ([4, 9, 13, 14, 15, 23, 24, 25, 26].includes(reparacion.get('id_reparacion')?.value)) {
+            @if ([4, 9, 13, 14, 15, 21, 22, 23, 24, 25].includes(reparacion.get('id_reparacion')?.value)) {
 
             <nz-form-label>{{ getNombreReparacion(reparacion.get('id_reparacion')?.value) }}</nz-form-label>
 

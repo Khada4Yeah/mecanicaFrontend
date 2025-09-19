@@ -122,6 +122,7 @@ export class CrearFichaComponent implements OnInit {
       case 13:
       case 14:
       case 15:
+      case 25:
         return this.formBuilder.group({
           kilometraje_actual: [null, [Validators.required, Validators.pattern('^[0-9]*$')]],
           kilometraje_siguiente: [null, [Validators.required, Validators.pattern('^[0-9]*$')]]
@@ -142,10 +143,25 @@ export class CrearFichaComponent implements OnInit {
   }
 
   handleTransferChange(ret: {}) {
-    this.reparaciones.clear();
-    this.listaReparacionesTransfer.forEach((item: TransferItem) => {
-      if (item.direction === 'right') {
-        this.addReparacion(Number(item['key']));
+    const idsDerecha = this.listaReparacionesTransfer
+      .filter((item: TransferItem) => item.direction === 'right')
+      .map(item => Number(item['key']));
+
+    const formArray = this.reparaciones;
+
+    // 1. Eliminar reparaciones que ya no están en la derecha
+    for (let i = formArray.length - 1; i >= 0; i--) {
+      const idReparacion = formArray.at(i).get('id_reparacion')?.value;
+      if (!idsDerecha.includes(idReparacion)) {
+        formArray.removeAt(i);
+      }
+    }
+
+    // 2. Agregar solo las nuevas
+    idsDerecha.forEach(id => {
+      const yaExiste = formArray.controls.some(control => control.get('id_reparacion')?.value === id);
+      if (!yaExiste) {
+        this.addReparacion(id);
       }
     });
   }
