@@ -6,7 +6,7 @@
 
 <div nz-row *ngIf="paginaCargada">
     <nz-table nz-col #tablaClientes [nzData]="clientesFiltrados" [nzBordered]="true"
-        [nzScroll]="isSmallScreen ? { x: '1000px' } : {}">
+        [nzScroll]="isSmallScreen ? { x: '1000px' } : {}" [nzSize]="isSmallScreen ? 'small' : 'default'">
         <thead>
             <tr>
                 <th>Cédula</th>

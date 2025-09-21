@@ -11,12 +11,8 @@ nz-table {
     }
 }
 
-nz-select {
-    margin-bottom: 15px;
-}
-
 @media (min-width: 576px) {
-    nz-select {
+    .select-fichas-container {
         width: 350px;
     }
 
@@ -28,8 +24,11 @@ nz-select {
 }
 
 @media (max-width: 576px) {
-    nz-input-group {
-        width: 100%;
+    .select-fichas-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 10px;
     }
 
     nz-table {

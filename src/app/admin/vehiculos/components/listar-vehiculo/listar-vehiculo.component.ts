@@ -6,6 +6,7 @@ import { ClienteService } from '../../../../core/services/cliente.service';
 import { EncryptionService } from '../../../../core/services/encryption.service';
 import { Router } from '@angular/router';
 import { ModalService } from '../../../../core/services/modal.service';
+import { ScreenService } from '../../../../core/services/screen.service';
 
 @Component({
   selector: 'app-listar-vehiculo',
@@ -17,6 +18,7 @@ export class ListarVehiculoComponent implements OnInit {
   vehiculos: Vehiculo[] = [];
   clientes: Cliente[] = [];
   idCliente: number = 0;
+  private screenService = inject(ScreenService);
 
   isSmallScreen: boolean = false;
 
@@ -24,12 +26,13 @@ export class ListarVehiculoComponent implements OnInit {
   private modal = inject(ModalService);
   private router = inject(Router);
 
-  constructor(private vehiculoService: VehiculoService, private clienteService: ClienteService) {
-    this.checkScreenSize();
-  }
+  constructor(private vehiculoService: VehiculoService, private clienteService: ClienteService) { }
 
   ngOnInit(): void {
     this.getClientes();
+    this.screenService.isSmallScreen$.subscribe((isSmall) => {
+      this.isSmallScreen = isSmall;
+    });
   }
 
   getClientes(): void {
@@ -65,15 +68,6 @@ export class ListarVehiculoComponent implements OnInit {
   editVehiculo(idVehiculo: number): void {
     const encryptedId = this.encryptionService.encrypt(idVehiculo.toString());
     this.router.navigate([`/admin/vehiculos/editar/${encryptedId}`]);
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onresize() {
-    this.checkScreenSize();
-  }
-
-  checkScreenSize() {
-    this.isSmallScreen = window.innerWidth < 768; // Cambia 768 al tamaño que desees
   }
 
 }

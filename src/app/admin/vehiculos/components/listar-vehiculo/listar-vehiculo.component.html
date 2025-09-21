@@ -16,7 +16,7 @@
 <div *ngIf="paginaCargada">
     <div nz-row>
         <nz-table nz-col #tablaVehiculos [nzData]="vehiculos" [nzBordered]="true"
-            [nzScroll]="isSmallScreen ? { x: '1000px' } : {}">
+            [nzScroll]="isSmallScreen ? { x: '1000px' } : {}" [nzSize]="isSmallScreen ? 'small' : 'default'">
             <thead>
                 <tr>
                     <th>Placa</th>

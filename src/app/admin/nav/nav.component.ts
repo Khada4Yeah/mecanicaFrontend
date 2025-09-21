@@ -1,6 +1,9 @@
-import { Component, inject } from '@angular/core';
-import { AuthService } from '../../core/services/auth.service';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+
+import { AuthService } from '../../core/services/auth.service';
+import { ScreenService } from '../../core/services/screen.service';
+
 
 @Component({
   selector: 'app-nav',
@@ -13,7 +16,15 @@ export class NavComponent {
 
   private authService = inject(AuthService);
   private router = inject(Router);
+  private screenService = inject(ScreenService);
 
+  isSmallScreen: boolean = false;
+
+  ngOnInit(): void {
+    this.screenService.isSmallScreen$.subscribe((isSmall) => {
+      this.isSmallScreen = isSmall;
+    });
+  }
 
   logout(): void {
     this.isLoading = true;

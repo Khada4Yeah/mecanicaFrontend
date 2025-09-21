@@ -1,6 +1,6 @@
 <nz-layout class="app-layout">
-    <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md" [nzCollapsedWidth]="40"
-        [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
+    <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md"
+        [nzCollapsedWidth]="isSmallScreen ? 40:75" [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
         <div class="sidebar-logo">
             <a routerLink="">
                 <img src="assets/images/logo_2.svg" alt="logo">

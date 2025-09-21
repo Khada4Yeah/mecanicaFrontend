@@ -6,6 +6,7 @@ import { ClienteService } from '../../../../core/services/cliente.service';
 import { EncryptionService } from '../../../../core/services/encryption.service';
 import { Router } from '@angular/router';
 import { ModalService } from '../../../../core/services/modal.service';
+import { ScreenService } from '../../../../core/services/screen.service';
 
 @Component({
   selector: 'app-listar-cliente',
@@ -22,15 +23,17 @@ export class ListarClienteComponent implements OnInit {
   private encryptionService = inject(EncryptionService);
   private router = inject(Router);
   private modal = inject(ModalService);
+  private screenService = inject(ScreenService);
 
   isSmallScreen: boolean = false;
 
-  constructor(private clienteService: ClienteService) {
-    this.checkScreenSize();
-  }
+  constructor(private clienteService: ClienteService) { }
 
   ngOnInit(): void {
     this.getClientes();
+    this.screenService.isSmallScreen$.subscribe((isSmall) => {
+      this.isSmallScreen = isSmall;
+    });
   }
 
   getClientes(): void {
@@ -71,12 +74,4 @@ export class ListarClienteComponent implements OnInit {
     });
   }
 
-  @HostListener('window:resize', ['$event'])
-  onresize() {
-    this.checkScreenSize();
-  }
-
-  checkScreenSize() {
-    this.isSmallScreen = window.innerWidth < 768; // Cambia 768 al tamaño que desees
-  }
 }

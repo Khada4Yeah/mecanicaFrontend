@@ -4,15 +4,16 @@
 <nz-spin [nzSpinning]="!paginaCargada" [nzTip]="'Cargando fichas...'">
 </nz-spin>
 
-<nz-select nzShowSearch nzPlaceHolder="Selecciona un cliente" [(ngModel)]="idCliente"
-    (ngModelChange)="getVehiculosCliente()" *ngIf="clientes.length !== 0">
-    <nz-option *ngFor="let cliente of clientes"
-        [nzLabel]="cliente.usuario.nombres + ' ' + cliente.usuario.apellido_p + ' ' + cliente.usuario.apellido_m"
-        [nzValue]="cliente.id_cliente">
-    </nz-option>
-</nz-select>
+<div class="select-fichas-container">
+    <nz-select nzShowSearch nzPlaceHolder="Selecciona un cliente" [(ngModel)]="idCliente"
+        (ngModelChange)="getVehiculosCliente()" *ngIf="clientes.length !== 0">
+        <nz-option *ngFor="let cliente of clientes"
+            [nzLabel]="cliente.usuario.nombres + ' ' + cliente.usuario.apellido_p + ' ' + cliente.usuario.apellido_m"
+            [nzValue]="cliente.id_cliente">
+        </nz-option>
+    </nz-select>
 
-<div>
+
     <nz-select nzShowSearch nzPlaceHolder="Selecciona un vehículo" [(ngModel)]="idVehiculo"
         (ngModelChange)="getFichasVehiculo()" *ngIf="clientes.length !== 0">
         <nz-option *ngFor="let vehiculo of vehiculos" [nzLabel]="vehiculo.placa" [nzValue]="vehiculo.id_vehiculo">
@@ -23,7 +24,8 @@
 <div *ngIf="paginaCargada">
 
     <div nz-row>
-        <nz-table #tablaFichas [nzData]="fichas" [nzBordered]="true" [nzScroll]="isSmallScreen ? { x: '1000px' } : {}">
+        <nz-table #tablaFichas [nzData]="fichas" [nzBordered]="true" [nzScroll]="isSmallScreen ? { x: '1000px' } : {}"
+            [nzSize]="isSmallScreen ? 'small' : 'default'">
             <thead>
                 <tr>
                     <th>Número Ficha</th>

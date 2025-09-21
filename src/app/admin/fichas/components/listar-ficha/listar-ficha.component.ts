@@ -2,6 +2,7 @@ import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { Ficha } from '../../../../core/models/ficha.model';
 import { FichaService } from '../../../../core/services/ficha.service';
 import { ModalService } from '../../../../core/services/modal.service';
+import { ScreenService } from '../../../../core/services/screen.service';
 import { RequestStatus } from '../../../../core/models/request-status.model';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Cliente } from '../../../../core/models/cliente.model';
@@ -27,15 +28,17 @@ export class ListarFichaComponent implements OnInit {
   private mensaje = inject(NzMessageService);
   private clienteService = inject(ClienteService);
   private vehiculoService = inject(VehiculoService);
+  private screenService = inject(ScreenService);
 
   isSmallScreen: boolean = false;
 
-  constructor(private fichaService: FichaService) {
-    this.checkScreenSize();
-  }
+  constructor(private fichaService: FichaService) { }
 
   ngOnInit(): void {
     this.getClientes();
+    this.screenService.isSmallScreen$.subscribe((isSmall) => {
+      this.isSmallScreen = isSmall;
+    });
   }
 
   getClientes(): void {
@@ -107,14 +110,5 @@ export class ListarFichaComponent implements OnInit {
       complete: () => {
       }
     });
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onresize() {
-    this.checkScreenSize();
-  }
-
-  checkScreenSize() {
-    this.isSmallScreen = window.innerWidth < 768; // Cambia 768 al tamaño que desees
   }
 }

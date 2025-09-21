@@ -27,6 +27,12 @@
         flex-direction: column;
         width: 100%;
     }
+
+    ::ng-deep nz-transfer .ant-transfer-list {
+        width: 310px;
+        height: 270px;
+        margin-right: 15px;
+    }
 }
 
 nz-form-control {
