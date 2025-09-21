@@ -13,7 +13,11 @@ nz-table {
 
 @media (min-width: 576px) {
     .select-fichas-container {
-        width: 350px;
+        display: flex;
+        flex-direction: column;
+        max-width: 400px;
+        gap: 15px;
+        margin-bottom: 10px;
     }
 
     nz-table {
