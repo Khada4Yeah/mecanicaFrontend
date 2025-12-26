@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    API_URL: 'http://mecanica.khadayeah-server.online/api/'
+    API_URL: 'https://mecanica.khadayeah-server.online/api/'
 };
